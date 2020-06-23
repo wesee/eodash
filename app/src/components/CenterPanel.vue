@@ -14,6 +14,7 @@
       </v-tab>
       <v-tab
         style="width: 125px"
+        id="v-step-3"
       >
         Table
         <v-icon>mdi-table-search</v-icon>
@@ -32,6 +33,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-btn
+              id="v-step-2"
               v-on="on"
               class="globalIndicators"
               color="primary"

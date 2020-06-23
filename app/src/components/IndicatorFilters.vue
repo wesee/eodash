@@ -8,6 +8,7 @@
       icons-and-text
     >
       <v-tab
+        id="v-step-0"
       >
         <v-badge
           v-if="countrySelection !== 'all'"
@@ -21,6 +22,7 @@
         <v-icon class="mb-1">mdi-flag-outline</v-icon>
       </v-tab>
       <v-tab
+        id="v-step-1"
       >
         <v-badge
           v-if="indicatorSelection !== 'all'"

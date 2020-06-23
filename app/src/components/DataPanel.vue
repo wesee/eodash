@@ -29,11 +29,13 @@
             </v-overlay>
             <indicator-map
               style="top: 0px; position: absolute;"
+              id="v-step-5"
               v-if="globalData"
               class="pt-0 fill-height"
             />
             <indicator-data
               style="top: 0px; position: absolute;"
+              id="v-step-5"
               v-else
               class="pa-5"
             />

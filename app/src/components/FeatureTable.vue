@@ -5,6 +5,7 @@
         cols="12"
       >
         <v-data-table
+          id="v-step-4"
           :headers="headers"
           :items="allFeatures"
           :items-per-page="10"

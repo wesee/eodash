@@ -35,6 +35,32 @@
         </div>
       </div>
     </cookie-law>
+    <v-tour name="introTour" :steps="steps">
+      <template slot-scope="tour">
+        <transition name="fade">
+          <v-step
+            v-for="(step, index) of tour.steps"
+            :key="index"
+            v-if="tour.currentStep === index"
+            :step="step"
+            :previous-step="tour.previousStep"
+            :next-step="tour.nextStep"
+            :stop="tour.stop"
+            :skip="tour.skip"
+            :is-first="tour.isFirst"
+            :is-last="tour.isLast"
+            :labels="tour.labels"
+          >
+            <template>
+              <div slot="actions">
+                <v-btn v-if="tour.currentStep > 0" @click="tour.previousStep" small outlined dark class="mr-2">Previous step</v-btn>
+                <v-btn @click="tour.nextStep" small color="white">Next step</v-btn>
+              </div>
+            </template>
+          </v-step>
+        </transition>
+      </template>
+    </v-tour>
   </v-app>
 </template>
 
@@ -52,6 +78,62 @@ export default {
   },
   data: () => ({
     showPrivacyDialog: false,
+    steps: [
+      {
+        target: '#v-step-0',
+        header: {
+          title: 'POI filters',
+        },
+        content: `Filter the displayed points of interest (POI) by country. Try clicking on a country from the list below!`
+      },
+      {
+        target: '#v-step-1',
+        header: {
+          title: 'POI filters',
+        },
+        content: 'You can also filter by indicator. Click on the indicators tab to see all available indicators. There might be combinations of country & indicator that have no filter results, so adjust accorddingly.',
+      },
+      {
+        target: '#v-step-2',
+        header: {
+          title: 'Global indicatos',
+        },
+        content: 'In the map view, this is the place to find global indicators that span all countries. Click on this button to show available indicators.',
+        params: {
+          placement: 'right'
+        }
+      },
+      {
+        target: '#v-step-3',
+        header: {
+          title: 'Table view',
+        },
+        content: 'If you would like to browse the available POIs via a table view instead of a map view, click this tab.',
+        params: {
+          placement: 'bottom'
+        }
+      },
+      {
+        target: '#v-step-4',
+        header: {
+          title: 'POI details',
+        },
+        content: `Click on one of the POIs to see its details`,
+        params: {
+          placement: 'top'
+        }
+      },
+      {
+        target: '#v-step-5',
+        header: {
+          title: 'POI details',
+        },
+        content: `Click on one of the POIs to see its details`,
+        params: {
+          placement: 'left'
+        }
+      },
+    ],
   }),
   computed: {
     ...mapState('config', ['appConfig']),
@@ -145,4 +227,13 @@ export default {
 
 <style lang="scss">
 @import "~@/scss/global.scss";
+
+// .v-tour {
+//   .v-step__header, .v-step {
+//     background: var(--v-primary-base) !important;
+//   }
+//   .v-step .v-step__arrow, .v-step .v-step__arrow--dark {
+//     border-color: var(--v-primary-base) !important;
+//   }
+// }
 </style>

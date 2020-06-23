@@ -74,6 +74,9 @@
             v-html="welcome"
             class="md-body"
           ></div>
+          <v-btn block large class="ma-3" color="primary" @click="startTour">
+            <v-icon left>mdi-information-outline</v-icon>
+            Start Tour</v-btn>
         </v-card>
       </v-col>
     </v-row>
@@ -115,6 +118,9 @@ export default {
         .filter((i) => i.properties.indicatorObject['Indicator code'] !== 'd' && this.baseConfig
           .indicatorsDefinition[i.properties.indicatorObject['Indicator code']]
           .class === type).length;
+    },
+    startTour() {
+      this.$tours.introTour.start();
     },
   },
 };

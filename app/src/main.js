@@ -4,6 +4,7 @@ import VueMatomo from 'vue-matomo';
 import VueMeta from 'vue-meta';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify/lib';
+import VueTour from 'vue-tour';
 import { Touch } from 'vuetify/lib/directives';
 
 import browserDetect from 'vue-browser-detect-plugin';
@@ -40,6 +41,10 @@ Vue.use(VueMatomo, {
 
 Vue.use(VueMeta);
 Vue.use(VueRouter);
+
+require('vue-tour/dist/vue-tour.css');
+
+Vue.use(VueTour);
 
 const routes = [
   { path: '/', component: Dashboard },
