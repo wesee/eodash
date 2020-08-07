@@ -1,8 +1,14 @@
 <template>
   <div class="elevation-3 pa-5 primary white--text"
     style="border-radius: 3px; width: 40vw">
-    <h3>{{ this.$store.state.indicators.selectedIndicator ? this.$store.state.indicators.selectedIndicator.city : 'Start Tour' }}</h3>
-    <p><small v-if="this.$store.state.indicators.selectedIndicator">{{ this.$store.state.indicators.selectedIndicator.description }}</small></p>
+    <h3>{{ this.$store.state.indicators.selectedIndicator
+      ? this.$store.state.indicators.selectedIndicator.city
+      : 'Start Tour' }}</h3>
+    <p>
+      <small
+        v-if="this.$store.state.indicators.selectedIndicator"
+      >{{ this.$store.state.indicators.selectedIndicator.description }}</small>
+    </p>
     <v-icon color="white" class="mr-3" @click="playback
       ? pauseTour()
       : startTour()">
