@@ -84,7 +84,7 @@ import {
 } from 'vuex';
 
 import {
-  geoJson, Point, DivIcon, featureGroup,
+  geoJson, latLngBounds, latLng, Point, DivIcon, featureGroup,
 } from 'leaflet';
 import {
   LMap, LTileLayer, LGeoJson, LCircleMarker, LTooltip,
@@ -266,6 +266,9 @@ export default {
             features: [],
           };
         }
+        if (this.$store.state.config.tourPlayback) {
+          this.flyToBounds(mutation.payload);
+        }
         this.resetClusterLayer();
       }
     });
@@ -363,6 +366,40 @@ export default {
           : time;
       }
       return additionalSettings;
+    },
+    flyToBounds(poi) {
+      // zooms to subaoi if present or area around aoi if not
+      const boundsPad = 0.15;
+      if (poi.subAoi && poi.subAoi.features.length > 0) {
+        const bounds = geoJson(poi.subAoi).getBounds();
+        const cornerMax1 = latLng([bounds.getSouth() - boundsPad, bounds.getWest() - boundsPad]);
+        const cornerMax2 = latLng([bounds.getNorth() + boundsPad, bounds.getEast() + boundsPad]);
+        const boundsMax = latLngBounds(cornerMax1, cornerMax2);
+        this.map.flyToBounds(bounds);
+      } else if (poi.aoi) {
+        const cornerMax1 = latLng([poi.aoi.lat - boundsPad, poi.aoi.lng - boundsPad]);
+        const cornerMax2 = latLng([poi.aoi.lat + boundsPad, poi.aoi.lng + boundsPad]);
+        const boundsMax = latLngBounds(cornerMax1, cornerMax2);
+        this.map.setZoom(18);
+        this.map.flyTo(poi.aoi);
+        if (this.indicatorsDefinition[poi.indicator].largeSubAoi) {
+          this.map.setMinZoom(2);
+        } else {
+          // might need tweaking further on
+          this.map.setMinZoom(14);
+        }
+        // limit user movement around map
+        this.map.setMaxBounds(boundsMax);
+      } else if (poi.aoiID === 'World') {
+        this.map.flyToBounds([
+          [-90,-180], [90,180]
+        ]);
+      } else {
+        // zoom to default bbox from config
+        // this.map.setMinZoom(this.mapDefaults.minMapZoom);
+        // this.map.setMaxBounds(null);
+        // this.map.fitBounds(latLngBounds(this.mapDefaults.bounds));
+      }
     },
   },
   watch: {

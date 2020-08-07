@@ -182,6 +182,8 @@
             class="pt-0 fill-height"
           >
             <center-panel />
+            <tour-control
+              style="position: absolute; bottom: 20px; left: 20px; z-index: 999"/>
           </v-col>
         </v-row>
       </v-container>
@@ -257,6 +259,7 @@ import Feedback from '@/views/Feedback.vue';
 import SelectionPanel from '@/components/SelectionPanel.vue';
 import CenterPanel from '@/components/CenterPanel.vue';
 import DataPanel from '@/components/DataPanel.vue';
+import TourControl from '@/components/TourControl.vue';
 import closeMixin from '@/mixins/close';
 
 export default {
@@ -273,6 +276,7 @@ export default {
     SelectionPanel,
     CenterPanel,
     DataPanel,
+    TourControl,
   },
   props: {
     source: String,
