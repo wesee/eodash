@@ -50,6 +50,7 @@
             :is-first="tour.isFirst"
             :is-last="tour.isLast"
             :labels="tour.labels"
+            :highlight="tour.highlight"
           >
             <template>
               <div slot="actions">
@@ -84,7 +85,10 @@ export default {
         header: {
           title: 'POI filters',
         },
-        content: `Filter the displayed points of interest (POI) by country. Try clicking on a country from the list below!`
+        content: `Filter the displayed points of interest (POI) by country. Try clicking on a country from the list below!`,
+        params: {
+          highlight: true,
+        }
       },
       {
         target: '#v-step-1',
@@ -235,5 +239,8 @@ export default {
 //   .v-step .v-step__arrow, .v-step .v-step__arrow--dark {
 //     border-color: var(--v-primary-base) !important;
 //   }
+  ::v-deep .v-tour__target--highlighted {
+    box-shadow: 0 0 0 99999px rgba(0,0,0,.4);
+  }
 // }
 </style>
