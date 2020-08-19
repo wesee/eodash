@@ -183,6 +183,7 @@
           >
             <center-panel />
             <tour-control
+              v-if="this.$store.state.config.tourEnabled"
               style="position: absolute; bottom: 20px; left: 20px; z-index: 999"/>
           </v-col>
         </v-row>
@@ -309,10 +310,16 @@ export default {
     setTimeout(() => {
       // only show when no poi is selected
       if (!this.$route.query.poi) {
-        this.showText = 'welcome';
-        this.drawerRight = true;
+        // this.showText = 'welcome';
+        // this.drawerRight = true;
+        this.$store.commit('config/SET_TOUR_ENABLED', true);
       }
     }, 2000);
+    this.$store.subscribe((mutation) => {
+      if (mutation.type === 'config/SET_TOUR_ENABLED') {
+        this.drawerLeft = !mutation.payload;
+      }
+    });
   },
   methods: {
     setDataPanelWidth(enable) {

@@ -2,6 +2,7 @@
 const state = {
   appConfig: null,
   baseConfig: null,
+  tourEnabled: false,
   tourPlayback: false,
 };
 
@@ -14,6 +15,9 @@ const mutations = {
   },
   SET_BASE_CONFIG(state, config) {
     state.baseConfig = config;
+  },
+  SET_TOUR_ENABLED(state, enabled) {
+    state.tourEnabled = enabled;
   },
   SET_TOUR_PLAYBACK(state, playback) {
     state.tourPlayback = playback;

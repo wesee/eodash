@@ -21,6 +21,7 @@
       layer-type="base"
       :opacity="opacityTerrain[zoom]"
       :options="layerOptions(null, layer)"
+      :visible="baseLayerVisible(layer.name)"
     >
     </LTileLayer>
     <l-geo-json
@@ -28,6 +29,7 @@
     :optionsStyle="countriesStyle"
     name="Country vectors"
     layer-type="overlay"
+    :visible="!tourMode"
     >
     </l-geo-json>
     <l-geo-json
@@ -125,6 +127,7 @@ export default {
         attributionControl: false,
         zoomControl: false,
       },
+      tourMode: false,
       opacityTerrain: [1],
       opacityOverlay: [0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.8, 0.8, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9],
       opacityCountries: [1, 1, 1, 1, 0.7, 0.7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -266,14 +269,26 @@ export default {
             features: [],
           };
         }
-        if (this.$store.state.config.tourPlayback) {
+        if (this.$store.state.config.tourEnabled) {
           this.flyToBounds(mutation.payload);
         }
         this.resetClusterLayer();
       }
+      if (mutation.type === 'config/SET_TOUR_ENABLED') {
+        this.tourMode = mutation.payload;
+      }
     });
   },
   methods: {
+    baseLayerVisible(name) {
+      let visible;
+      if (this.tourMode) {
+        visible = name === 'EOxCloudless 2019';
+      } else {
+        visible = name !== 'EOxCloudless 2019';
+      }
+      return visible;
+    },
     selectIndicator(feature) {
       const { indicatorObject } = feature.properties;
       if (!indicatorObject.dummyFeature) {

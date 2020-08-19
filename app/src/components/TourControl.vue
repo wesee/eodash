@@ -9,45 +9,54 @@
         v-if="this.$store.state.indicators.selectedIndicator"
       >{{ this.$store.state.indicators.selectedIndicator.description }}</small>
     </p>
-    <v-icon color="white" class="mr-3" @click="playback
+    <v-icon color="white" class="mr-3" @click="$store.state.config.tourPlayback
       ? pauseTour()
       : startTour()">
-        {{ playback
+        {{ $store.state.config.tourPlayback
           ? 'mdi-pause-circle-outline'
           : 'mdi-play-circle-outline' }}
     </v-icon>
     <v-icon color="white" class="mx-3" @click="previousItem()">mdi-menu-left</v-icon>
     <v-icon color="white" class="mx-3" @click="nextItem()">mdi-menu-right</v-icon>
     <v-icon color="white" class="ml-3" @click="closeTour()">mdi-close-circle</v-icon>
+    <v-progress-linear :value="progressValue" color="primary lighten-1"
+      v-show="$store.state.config.tourPlayback"
+      style="position: absolute; top: 0; left: 0; width: 100%"
+    ></v-progress-linear>
   </div>
 </template>
 
 <script>
+import {
+  mapState,
+} from 'vuex';
+
 export default {
   data: () => ({
     map: null,
     playback: false,
     currentTourItem: 0,
-    tourStops: [
-      'IT9-E13b',
-      'SE9-E5',
-      'DE11-E10a3',
-      'World-N1',
-    ],
+    tourStops: null,
+    progressValue: 0,
   }),
+  computed: {
+    ...mapState('config', [
+      'appConfig',
+    ]),
+  },
   mounted() {
-    // setTimeout(() => this.startTour(), 3000);
+    if (this.$store.state.config.tourEnabled) {
+      this.tourStops = this.appConfig.newsCarouselitems;
+      this.startTour();
+    }
   },
   methods: {
     startTour() {
       this.$store.commit('config/SET_TOUR_PLAYBACK', true);
       this.nextItem();
-      this.playback = setInterval(() => {
-        this.nextItem();
-      }, 10000);
     },
     pauseTour() {
-      this.playback = false;
+      clearInterval(this.playback);
       this.$store.commit('config/SET_TOUR_PLAYBACK', false);
     },
     previousItem() {
@@ -56,7 +65,7 @@ export default {
       } else {
         this.currentTourItem--;
       }
-      this.setPOI(this.tourStops[this.currentTourItem]);
+      this.setPOI(this.tourStops[this.currentTourItem].poi);
     },
     nextItem() {
       if (this.currentTourItem === this.tourStops.length - 1) {
@@ -64,10 +73,11 @@ export default {
       } else {
         this.currentTourItem++;
       }
-      this.setPOI(this.tourStops[this.currentTourItem]);
+      this.setPOI(this.tourStops[this.currentTourItem].poi);
     },
     closeTour() {
-      this.playback = false;
+      clearInterval(this.playback);
+      this.$store.commit('config/SET_TOUR_ENABLED', false);
       this.$store.commit('config/SET_TOUR_PLAYBACK', false);
     },
     setPOI(poi) {
@@ -79,6 +89,17 @@ export default {
           && indicatorObject.indicator === indicatorCode;
       });
       this.$store.commit('indicators/SET_SELECTED_INDICATOR', selectedFeature.properties.indicatorObject);
+      if (this.$store.state.config.tourPlayback) {
+        this.progressValue = 0;
+        this.playback = setInterval(() => {
+          this.progressValue += 1;
+          if (this.progressValue >= 100) {
+            this.progressValue = 0;
+            clearInterval(this.playback);
+            this.nextItem();
+          }
+        }, 100);
+      }
     },
   },
 };
