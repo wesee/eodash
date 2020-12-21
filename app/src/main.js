@@ -13,6 +13,7 @@ import marked from 'marked';
 import L from 'leaflet';
 import App from './App.vue';
 import Dashboard from './views/Dashboard.vue';
+import DashboardCustom from './views/DashboardCustom.vue';
 import Privacy from './views/Privacy.vue';
 import PageNotFound from './views/PageNotFound.vue';
 import Terms from './views/Terms.vue';
@@ -56,6 +57,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { path: '/', component: Dashboard },
+  { path: '/dashboard', component: DashboardCustom },
   { path: '/privacy', component: Privacy },
   { path: '/terms_and_conditions', component: Terms },
   { path: '/iframe', component: EmbedIframe },

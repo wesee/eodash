@@ -115,114 +115,9 @@
         </v-btn>
         <v-divider></v-divider>
       </template>
-      <selection-panel style="overflow:hidden" />
     </v-navigation-drawer>
-    <v-navigation-drawer
-      v-if="$vuetify.breakpoint.mdAndUp"
-      v-model="drawerRight"
-      right
-      stateless
-      app
-      clipped
-      temporary
-      hide-overlay
-      :width="dataPanelFullWidth ? '100%' : '40%'"
-      :style="`margin-top: ${$vuetify.application.top}px;
-        height: calc(100% - ${$vuetify.application.top + $vuetify.application.footer}px`"
-      class="data-panel"
-    >
-      <v-toolbar v-if="$store.state.indicators.selectedIndicator" flat>
-        <v-btn v-if="dataPanelFullWidth" icon @click="setDataPanelWidth(false)">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-btn v-else icon @click="setDataPanelWidth(true)">
-          <v-icon>mdi-arrow-expand</v-icon>
-        </v-btn>
-        <v-toolbar-title v-if="$store.state.indicators.selectedIndicator"
-          :class="$store.state.indicators.selectedIndicator.description ===
-            $store.state.indicators.selectedIndicator.indicatorName && 'preventEllipsis'"
-        >
-          {{ $store.state.features.allFeatures
-              .find(f => getLocationCode(f.properties.indicatorObject) === $route.query.poi)
-              .properties.indicatorObject.city }},
-          {{ $store.state.features.allFeatures
-              .find(f => getLocationCode(f.properties.indicatorObject) === $route.query.poi)
-              .properties.indicatorObject.description }}
-          <div v-if="
-            $store.state.indicators.selectedIndicator.description !==
-            $store.state.indicators.selectedIndicator.indicatorName"
-            class="subheading" style="font-size: 0.8em">
-            {{ $store.state.features.allFeatures
-              .find(f => getLocationCode(f.properties.indicatorObject) === $route.query.poi)
-              .properties.indicatorObject.indicatorName }}
-          </div>
-        </v-toolbar-title>
-      </v-toolbar>
-      <data-panel
-        v-if="$store.state.indicators.selectedIndicator"
-        :key="panelKey"
-        :expanded="dataPanelFullWidth" class="px-5" />
-      <template v-else>
-        <Welcome v-if="showText === 'welcome'" />
-        <About v-else-if="showText === 'about'" />
-      </template>
-    </v-navigation-drawer>
-    <v-dialog
-      v-if="$vuetify.breakpoint.smAndDown"
-      v-model="dialog"
-      persistent
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-      style="overflow:hidden"
-    >
-      <v-toolbar dark color="primary">
-        <v-toolbar-title style="overflow: unset; white-space: pre-wrap;"
-          v-if="$store.state.indicators.selectedIndicator"
-        >{{ $store.state.indicators.selectedIndicator.city }},
-          {{ $store.state.indicators.selectedIndicator.description }}
-        </v-toolbar-title>
-        <v-toolbar-title v-else class="text-capitalize">
-          {{ showText }}
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn
-          v-if="showText === 'welcome'
-            && $vuetify.breakpoint.smAndDown
-            && !$store.state.indicators.selectedIndicator"
-          @click="clickMobileClose"
-          color="secondary"
-        >
-          <v-icon left>mdi-arrow-right</v-icon>
-          Start exploring!
-        </v-btn>
-        <v-btn v-else icon dark @click="clickMobileClose">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-toolbar>
-      <div class="scrollContainer data-panel">
 
-        <h4 v-if="
-            ($store.state.indicators.selectedIndicator && (
-              $store.state.indicators.selectedIndicator.description !==
-              $store.state.indicators.selectedIndicator.indicatorName))"
-          class="px-4 py-2"
-        >
-          {{ $store.state.features.allFeatures
-              .find(f => getLocationCode(f.properties.indicatorObject) === $route.query.poi)
-              .properties.indicatorObject.indicatorName }}
-        </h4>
-        <data-panel
-          v-if="$store.state.indicators.selectedIndicator"
-          :expanded="dataPanelFullWidth" class="fill-height" />
-        <template v-else>
-          <Welcome v-if="showText === 'welcome'" style="padding-bottom: 135px !important" />
-          <About v-else-if="showText === 'about'" style="padding-bottom: 100px !important" />
-        </template>
-      </div>
-    </v-dialog>
     <v-content style="height: 100vh; height: calc(var(--vh, 1vh) * 100); overflow:hidden"
-      :style="$vuetify.breakpoint.mdAndUp && 'width: 60%;'"
     >
       <v-container
         class="fill-height pa-0"
@@ -231,9 +126,9 @@
         <v-row class="fill-height">
           <v-col
             cols="12"
-            class="pt-0 fill-height"
+            class="pt-0 fill-height scrollContainer"
           >
-            <center-panel />
+            <custom-dashboard-grid />
           </v-col>
         </v-row>
       </v-container>
@@ -295,8 +190,7 @@ import Welcome from '@/views/Welcome.vue';
 import About from '@/views/About.vue';
 import FeedbackButton from '@/components/FeedbackButton.vue';
 import SelectionPanel from '@/components/SelectionPanel.vue';
-import CenterPanel from '@/components/CenterPanel.vue';
-import DataPanel from '@/components/DataPanel.vue';
+import CustomDashboardGrid from '@/components/CustomDashboardGrid.vue';
 import closeMixin from '@/mixins/close';
 import dialogMixin from '@/mixins/dialogMixin';
 
@@ -315,8 +209,7 @@ export default {
     About,
     FeedbackButton,
     SelectionPanel,
-    CenterPanel,
-    DataPanel,
+    CustomDashboardGrid,
   },
   props: {
     source: String,
@@ -444,4 +337,12 @@ export default {
 ::v-deep .v-navigation-drawer--temporary:not(.v-navigation-drawer--close) {
     box-shadow: none;
 }
+</style>
+
+<style lang="scss" scoped>
+  .scrollContainer {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+  }
 </style>
