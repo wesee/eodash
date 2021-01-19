@@ -6,11 +6,11 @@ import { latLng, latLngBounds } from 'leaflet';
 import { shTimeFunction, shS2TimeFunction } from '@/utils';
 import { baseLayers, overlayLayers } from '@/config/layers';
 
-export const dataPath = './eodash-data/internal/';
+export const dataPath = '/eodash-data/internal/';
 export const dataEndpoints = [
   {
     type: 'eox',
-    provider: './data/internal/pois_eodash.json',
+    provider: '/data/internal/pois_eodash.json',
   },
 ];
 
@@ -21,7 +21,7 @@ export const indicatorsDefinition = Object.freeze({
     story: '/eodash-data/stories/E1',
     features: {
       dateFormatFunction: (date) => DateTime.fromISO(date).toFormat("yyyyMMdd'T'HHmmss"),
-      url: './eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
+      url: '/eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
       allowedParameters: ['TYPE_SUMMARY', 'SPEED (KNOTSx10)', 'classification', 'TIMESTAMP UTC', 'TYPE_NAME', 'LENGTH'],
     },
   },
@@ -31,7 +31,7 @@ export const indicatorsDefinition = Object.freeze({
     story: '/eodash-data/stories/E1a',
     features: {
       dateFormatFunction: (date) => DateTime.fromISO(date).toFormat("yyyyMMdd'T'HHmmss"),
-      url: './eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
+      url: '/eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
       allowedParameters: ['classification'],
     },
   },
@@ -41,7 +41,7 @@ export const indicatorsDefinition = Object.freeze({
     story: '/eodash-data/stories/E2',
     features: {
       dateFormatFunction: (date) => DateTime.fromISO(date).toFormat("yyyyMMdd'T'HHmmss"),
-      url: './eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
+      url: '/eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
       allowedParameters: ['classification'],
     },
   },
@@ -166,7 +166,7 @@ export const indicatorsDefinition = Object.freeze({
     story: '/eodash-data/stories/E13b_PLES',
     features: {
       dateFormatFunction: (date) => DateTime.fromISO(date).toFormat("yyyyMMdd'T'HHmmss"),
-      url: './eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
+      url: '/eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
     },
     largeTimeDuration: true,
   },
@@ -187,7 +187,7 @@ export const indicatorsDefinition = Object.freeze({
     mapTimeLabelExtended: true,
     features: {
       dateFormatFunction: (date) => DateTime.fromISO(date).toFormat("yyyyMMdd'T'HHmmss"),
-      url: './eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
+      url: '/eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
     },
     largeTimeDuration: true,
   },
@@ -278,7 +278,7 @@ export const indicatorsDefinition = Object.freeze({
     },
     features: {
       dateFormatFunction: (date) => DateTime.fromISO(date).toFormat("yyyyMMdd'T'HH"),
-      url: './eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
+      url: '/eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
     },
   },
   d: { // dummy for locations without Indicator code
