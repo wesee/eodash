@@ -1,4 +1,4 @@
-export const baseLayers = {
+export const baseLayers = Object.freeze({
   cloudless: {
     name: 'EOxCloudless 2019',
     url: '//s2maps-tiles.eu/wmts/1.0.0/s2cloudless-2019_3857/default/g/{z}/{y}/{x}.jpg',
@@ -16,14 +16,15 @@ export const baseLayers = {
     protocol: 'xyz',
   },
   S2GLC: {
-    baseUrl: '//s2glc.creodias.eu/geoserver/S2GLC/wms?',
+    baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
     protocol: 'WMS',
     format: 'image/png',
     tileSize: 512,
     name: 'S2GLC - Europe Land Cover 2017',
-    layers: 'S2GLC_2017',
+    layers: 'CAMS_GLC_2017',
     attribution: '{ <a href="https://eodashboard.org/terms_and_conditions" target="_blank">Use of this data is subject to Articles 3 and 8 of the Terms and Conditions</a> }',
     visible: false,
+    minZoom: 7,
   },
   mapboxHighReso: {
     name: 'Mapbox high resolution',
@@ -33,9 +34,9 @@ export const baseLayers = {
     maxNativeZoom: 18,
     protocol: 'xyz',
   },
-};
+});
 
-export const overlayLayers = {
+export const overlayLayers = Object.freeze({
   eoxOverlay: {
     name: 'Overlay',
     url: '//s2maps-tiles.eu/wmts/1.0.0/overlay_base_bright_3857/default/g/{z}/{y}/{x}.jpg',
@@ -44,4 +45,4 @@ export const overlayLayers = {
     maxZoom: 14,
     protocol: 'xyz',
   },
-};
+});

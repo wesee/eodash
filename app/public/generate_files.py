@@ -92,13 +92,13 @@ default_array_map = {
 }
 
 
-def try_parsing_date(text):
+def try_parsing_date(text, line):
     for fmt in ('%Y-%m-%dT%H:%M:%S', '%Y-%m-%d'):
         try:
-            return datetime.datetime.strptime(text, fmt)
+            return datetime.datetime.strptime(text.strip(), fmt)
         except ValueError:
             pass
-    raise ValueError('time not provided in valid format')
+    raise ValueError(f'time "{text}" not provided in valid format, full line "{line}"')
 
 
 def generateData(
@@ -136,7 +136,7 @@ def generateData(
                     object_always_present = {
                         "eo_sensor": line[cm_arr["eo_sensor"]],
                         "input_data": line[cm_arr["input_data"]],
-                        "time": try_parsing_date(line[cm_arr["time"]]),
+                        "time": try_parsing_date(line[cm_arr["time"]], line),
                         "measurement_value": line[cm_arr["measurement_value"]],
                         "reference_time": line[cm_arr["reference_time"]],
                         "reference_value": line[cm_arr["reference_value"]],
@@ -151,7 +151,7 @@ def generateData(
                     poi_data_always = [{
                         "eo_sensor": line[cm_arr["eo_sensor"]],
                         "input_data": line[cm_arr["input_data"]],
-                        "time": try_parsing_date(line[cm_arr["time"]]),
+                        "time": try_parsing_date(line[cm_arr["time"]], line),
                         "measurement_value": line[cm_arr["measurement_value"]],
                         "color_code": line[cm_arr["color_code"]],
                         "indicator_value": line[cm_arr["indicator_value"]],
@@ -200,7 +200,7 @@ def generateData(
                         object_always_present = {
                             "eo_sensor": line[cm_arr["eo_sensor"]],
                             "input_data": line[cm_arr["input_data"]],
-                            "time": try_parsing_date(line[cm_arr["time"]]),
+                            "time": try_parsing_date(line[cm_arr["time"]], line),
                             "measurement_value": line[cm_arr["measurement_value"]],
                             "reference_time": line[cm_arr["reference_time"]],
                             "reference_value": line[cm_arr["reference_value"]],
@@ -215,7 +215,7 @@ def generateData(
                         poi_data_always = [{
                             "eo_sensor": line[cm_arr["eo_sensor"]],
                             "input_data": line[cm_arr["input_data"]],
-                            "time": try_parsing_date(line[cm_arr["time"]]),
+                            "time": try_parsing_date(line[cm_arr["time"]], line),
                             "measurement_value": line[cm_arr["measurement_value"]],
                             "color_code": line[cm_arr["color_code"]],
                             "indicator_value": line[cm_arr["indicator_value"]],
@@ -265,12 +265,12 @@ def generateData(
         )
         curr_data = poi_dict[poi_key]["poi_data"]
         # Save latest valid values for unique poi list
-        poi_dict[poi_key]["lastTime"] = ([""] + [i["time"] for i in curr_data if i["time"] != ""])[-1]
-        poi_dict[poi_key]["lastMeasurement"] = ([""] + [i["measurement_value"] for i in curr_data if i["measurement_value"] != ""])[-1]
-        poi_dict[poi_key]["lastColorCode"] = ([""] + [i["color_code"] for i in curr_data if i["color_code"] != ""])[-1]
-        poi_dict[poi_key]["lastIndicatorValue"] = ([""] + [i["indicator_value"] for i in curr_data if i["indicator_value"] != ""])[-1]
-        poi_dict[poi_key]["lastReferenceTime"] = ([""] + [i["reference_time"] for i in curr_data if i["reference_time"] != ""])[-1]
-        poi_dict[poi_key]["lastReferenceValue"] = ([""] + [i["reference_value"] for i in curr_data if i["reference_value"] != ""])[-1]
+        poi_dict[poi_key]["lastTime"] = ([""] + [i["time"] for i in curr_data if i["time"] not in ["", 'NaN', '/']])[-1]
+        poi_dict[poi_key]["lastMeasurement"] = ([""] + [i["measurement_value"] for i in curr_data if i["measurement_value"] not in ["", 'NaN', '/']])[-1]
+        poi_dict[poi_key]["lastColorCode"] = ([""] + [i["color_code"] for i in curr_data if i["color_code"] not in ["", 'NaN', '/']])[-1]
+        poi_dict[poi_key]["lastIndicatorValue"] = ([""] + [i["indicator_value"] for i in curr_data if i["indicator_value"] not in ["", 'NaN', '/']])[-1]
+        poi_dict[poi_key]["lastReferenceTime"] = ([""] + [i["reference_time"] for i in curr_data if i["reference_time"] not in ["", 'NaN', '/']])[-1]
+        poi_dict[poi_key]["lastReferenceValue"] = ([""] + [i["reference_value"] for i in curr_data if i["reference_value"] not in ["", 'NaN', '/']])[-1]
 
     def date_converter(obj):
         if isinstance(obj, datetime.datetime):
@@ -305,13 +305,14 @@ generateData(
         '/working/eodash-data/data/E10a8.csv',
         '/working/data/trilateral/E10c.csv',
         '/working/data/trilateral/E13b.csv',
-        '/working/data/trilateral/N1.csv',
         '/working/data/trilateral/N2.csv',
         '/working/data/trilateral/N3b.csv',
     ],
     [
         ['E1', 'or=(aoi_id.eq.BE3,aoi_id.eq.FR3)'],
         ['E1a', 'or=(aoi_id.eq.BE3,aoi_id.eq.FR3)'],
+        ['N3_tri', ''],
+        ['N1_tri', ''],
     ]
 )
 
@@ -333,16 +334,13 @@ generateData(
         '/working/eodash-data/data/E10a6.csv',
         '/working/eodash-data/data/E10a8.csv',
         '/working/eodash-data/data/E11.csv',
-        '/working/eodash-data/data/E13b2.csv',
-        '/working/eodash-data/data/E13b_PLES.csv',
-        '/working/eodash-data/data/E13d.csv',
+        '/working/eodash-data/data/E12b.csv',
+        '/working/eodash-data/data/E13b2.csv',  # archived
         '/working/eodash-data/data/E13d_detections.csv',
-        '/working/eodash-data/data/N1_PLES_Europe.csv',
         '/working/eodash-data/data/N1a_PM25_CAMS.csv',
         '/working/eodash-data/data/N1b_NO2_CAMS.csv',
         '/working/eodash-data/data/N1c_PM10_CAMS.csv',
         '/working/eodash-data/data/N1d_O3_CAMS.csv',
-        '/working/eodash-data/data/N3.csv',
         '/working/eodash-data/data/N4a.csv',
         '/working/eodash-data/data/N4c.csv',
     ],
@@ -351,5 +349,12 @@ generateData(
         ['E1a', ''],
         ['E2', ''],
         ['E5', ''],
+        ['E1_S2', ''],
+        ['E1a_S2', ''],
+        ['E2_S2', ''],
+        ['E13b', ''],
+        ['N3', ''],
+        ['N1', ''],
+        ['E13d', ''],
     ]
 )

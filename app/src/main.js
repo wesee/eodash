@@ -115,6 +115,7 @@ const renderVue = async () => {
           success: '#4CAF50',
           warning: '#FFC107',
           grey: '#AAA',
+          background: '#FFF',
         },
         dark: {
           primary: store.state.config.appConfig
@@ -129,6 +130,7 @@ const renderVue = async () => {
           success: '#4CAF50',
           warning: '#FFC107',
           grey: '#AAA',
+          background: '#121212',
         },
       },
     },
