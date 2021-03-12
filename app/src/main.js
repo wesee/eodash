@@ -4,8 +4,8 @@ import VueMatomo from 'vue-matomo';
 import VueMeta from 'vue-meta';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify/lib';
-import { Touch } from 'vuetify/lib/directives';
-import { Settings } from 'luxon';
+import {Touch} from 'vuetify/lib/directives';
+import {Settings} from 'luxon';
 import VueCountdown from '@chenfengyuan/vue-countdown';
 
 import browserDetect from 'vue-browser-detect-plugin';
@@ -19,7 +19,9 @@ import PageNotFound from './views/PageNotFound.vue';
 import Terms from './views/Terms.vue';
 import EmbedIframe from './views/EmbedIframe.vue';
 import store from './store';
-import charts from './plugins/charts'; // eslint-disable-line no-unused-vars
+import charts from './plugins/charts';
+import customDashboardApiFactory from './custom-dashboard';
+// eslint-disable-line no-unused-vars
 
 // Set UTC as default time zone behavior for whole client
 Settings.defaultZoneName = 'utc';
@@ -49,32 +51,41 @@ Vue.use(VueMatomo, {
   userId: undefined,
   cookieDomain: undefined,
   domains: undefined,
-  preInitActions: [],
+  preInitActions: []
 });
 
 Vue.use(VueMeta);
 Vue.use(VueRouter);
 
 const routes = [
-  { path: '/', component: Dashboard },
-  { path: '/dashboard/:viewingId/edit/:editingId?', component: DashboardCustom },
-  { path: '/dashboard/:viewingId?', component: DashboardCustom },
-  { path: '/privacy', component: Privacy },
-  { path: '/terms_and_conditions', component: Terms },
-  { path: '/iframe', component: EmbedIframe },
-  { path: '*', component: PageNotFound },
-];
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes,
-});
-
-Vue.use(Vuetify, {
-  directives: {
-    Touch,
+  {
+    path: '/',
+    component: Dashboard
   },
-});
+  {
+    path: '/dashboard',
+    component: DashboardCustom
+  },
+  {
+    path: '/privacy',
+    component: Privacy
+  },
+  {
+    path: '/terms_and_conditions',
+    component: Terms
+  }, {
+    path: '/iframe',
+    component: EmbedIframe
+  }, {
+    path: '*',
+    component: PageNotFound
+  },
+];
+const router = new VueRouter({mode: 'history', base: process.env.BASE_URL, routes});
+
+Vue.use(Vuetify, {directives: {
+    Touch
+  }});
 
 Vue.use(browserDetect);
 
@@ -83,9 +94,7 @@ mdRendererLinksTargetBlank.link = function (href, title, text) { // eslint-disab
   const link = marked.Renderer.prototype.link.call(this, href, title, text);
   return link.replace('<a', '<a target="_blank" ');
 };
-marked.setOptions({
-  renderer: mdRendererLinksTargetBlank,
-});
+marked.setOptions({renderer: mdRendererLinksTargetBlank});
 Vue.prototype.$marked = marked;
 
 const renderVue = async () => {
@@ -97,53 +106,43 @@ const renderVue = async () => {
   const vuetify = new Vuetify({
     theme: {
       options: {
-        customProperties: true,
+        customProperties: true
       },
       dark: false,
       // dark: mq.matches,
       themes: {
         light: {
-          primary: store.state.config.appConfig
-            ? store.state.config.appConfig.branding.primaryColor
-            : '#004170',
-          secondary: store.state.config.appConfig
-            ? store.state.config.appConfig.branding.secondaryColor
-            : '#424242',
+          primary: store.state.config.appConfig ? store.state.config.appConfig.branding.primaryColor : '#004170',
+          secondary: store.state.config.appConfig ? store.state.config.appConfig.branding.secondaryColor : '#424242',
           accent: '#82B1FF',
           error: '#FF5252',
           info: '#2196F3',
           success: '#4CAF50',
           warning: '#FFC107',
           grey: '#AAA',
-          background: '#FFF',
+          background: '#FFF'
         },
         dark: {
-          primary: store.state.config.appConfig
-            ? store.state.config.appConfig.branding.primaryColor
-            : '#004170',
-          secondary: store.state.config.appConfig
-            ? store.state.config.appConfig.branding.secondaryColor
-            : '#424242',
+          primary: store.state.config.appConfig ? store.state.config.appConfig.branding.primaryColor : '#004170',
+          secondary: store.state.config.appConfig ? store.state.config.appConfig.branding.secondaryColor : '#424242',
           accent: '#82B1FF',
           error: '#FF5252',
           info: '#2196F3',
           success: '#4CAF50',
           warning: '#FFC107',
           grey: '#AAA',
-          background: '#121212',
-        },
-      },
-    },
+          background: '#121212'
+        }
+      }
+    }
   });
 
-  try {
-    // Chrome & Firefox
+  try { // Chrome & Firefox
     mq.addEventListener('change', (e) => {
       vuetify.framework.theme.dark = e.matches;
     });
   } catch (e1) {
-    try {
-      // Safari
+    try { // Safari
       mq.addListener((e) => {
         vuetify.framework.theme.dark = e.matches;
       });
@@ -177,23 +176,59 @@ const renderVue = async () => {
         }
         return color;
       },
-      getLocationCode: (indicatorObject) => `${indicatorObject.aoiID}-${indicatorObject.indicator}`,
-      trackEvent: (action, name, value) => window._paq.push(['trackEvent', action, name, value]),
-    },
+      getLocationCode: (indicatorObject) => `${
+        indicatorObject.aoiID
+      }-${
+        indicatorObject.indicator
+      }`,
+      trackEvent: (action, name, value) => window._paq.push(
+        ['trackEvent', action, name, value]
+      )
+    }
   });
 
   // Global filters
-  Vue.filter('truncate',
-    (text, stop, clamp) => text
-      .slice(0, stop) + (stop < text.length
-      ? clamp || '...' : ''));
+  Vue.filter('truncate', (text, stop, clamp) => text.slice(0, stop) + (stop < text.length ? clamp || '...' : ''));
 
   new Vue({
     store,
     router,
     vuetify,
-    render: (h) => h(App),
+    render: (h) => h(App)
   }).$mount('#app');
 };
+
+if (store.state.dashboard ?. dashboardConfig ?. id) {
+  store.commit('dashboard/ADD_API', customDashboardApiFactory())
+
+  const id = store.state.dashboard ?. dashboardConfig ?. id
+  const editKey = store.state.dashboard ?. dashboardConfig ?. editKey;
+
+  store.state.dashboard.api.listen(id, editKey).then(response => {
+
+    if (response.error) {
+      console.error(response);
+      store.commit('dashboard/disconnect');
+    }
+
+
+    response.features = response.features.map(f => {
+      const newF = Object.assign({}, f);
+      delete newF.id;
+      newF.poi = f.id;
+      return newF;
+    })
+
+    store.commit('dashboard/SET', {
+      ...response,
+      ...(id && {
+        id
+      }),
+      ...(editKey && {
+        editKey
+      })
+    });
+  });
+}
 
 renderVue();
