@@ -176,8 +176,10 @@
             <indicator-data
               style="top: 0px; position: absolute;"
               class="pa-5 chart"
+              :currentIndicator="customAreaIndicator"
             />
           </v-card>
+          <AddToDashboardButton class="mt-3" v-if="customAreaIndicator" style="float:right" :indicatorObject="customAreaIndicator"></AddToDashboardButton>
         </v-col>
         <v-col
           cols="12"
