@@ -179,7 +179,9 @@
               :currentIndicator="customAreaIndicator"
             />
           </v-card>
-          <AddToDashboardButton class="mt-3" v-if="customAreaIndicator" style="float:right" :indicatorObject="customAreaIndicator"></AddToDashboardButton>
+          <div class="mt-3" style="float:right">
+            <AddToDashboardButton  v-if="customAreaIndicator" :indicatorObject="customAreaIndicator"></AddToDashboardButton>
+          </div>
         </v-col>
         <v-col
           cols="12"
