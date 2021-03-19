@@ -154,25 +154,13 @@
           :class="$store.state.indicators.selectedIndicator.description ===
             $store.state.indicators.selectedIndicator.indicatorName && 'preventEllipsis'"
         >
-          {{ $store.state.features.allFeatures
-              .find(f => getLocationCode(f && f.properties.indicatorObject) === $route.query.poi) &&
-              $store.state.features.allFeatures
-              .find(f => getLocationCode(f && f.properties.indicatorObject) === $route.query.poi)
-              .properties.indicatorObject.city }},
-          {{ $store.state.features.allFeatures
-              .find(f => getLocationCode(f && f.properties.indicatorObject) === $route.query.poi)
-              && $store.state.features.allFeatures
-              .find(f => getLocationCode(f && f.properties.indicatorObject) === $route.query.poi)
-              .properties.indicatorObject.description }}
+          {{ queryIndicatorObject && queryIndicatorObject.properties.indicatorObject.city }},
+          {{ queryIndicatorObject && queryIndicatorObject.properties.indicatorObject.description }}
           <div v-if="
             $store.state.indicators.selectedIndicator.description !==
             $store.state.indicators.selectedIndicator.indicatorName"
             class="subheading" style="font-size: 0.8em">
-            {{ $store.state.features.allFeatures
-              .find(f => getLocationCode(f && f.properties.indicatorObject) === $route.query.poi) &&
-              $store.state.features.allFeatures
-              .find(f => getLocationCode(f && f.properties.indicatorObject) === $route.query.poi)
-              .properties.indicatorObject.indicatorName }}
+            {{ queryIndicatorObject && queryIndicatorObject.properties.indicatorObject.indicatorName }}
           </div>
         </v-toolbar-title>
       </v-toolbar>
@@ -227,11 +215,7 @@
               $store.state.indicators.selectedIndicator.indicatorName))"
           class="px-4 py-2"
         >
-          {{ $store.state.features.allFeatures
-              .find(f => getLocationCode(f && f.properties.indicatorObject) === $route.query.poi) &&
-              $store.state.features.allFeatures
-              .find(f => getLocationCode(f && f.properties.indicatorObject) === $route.query.poi)
-              .properties.indicatorObject.indicatorName }}
+          {{ queryIndicatorObject && queryIndicatorObject.properties.indicatorObject.indicatorName }}
         </h4>
         <data-panel
           v-if="$store.state.indicators.selectedIndicator"
@@ -329,6 +313,9 @@ export default {
       }
       return currentNews;
     },
+    queryIndicatorObject() {
+      return this.$store.state.features.allFeatures.find(f => this.getLocationCode(f && f.properties.indicatorObject) === this.$route.query.poi)
+    }
   },
   created() {
     this.drawerLeft = this.$vuetify.breakpoint.mdAndUp;
