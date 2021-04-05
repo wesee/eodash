@@ -4,8 +4,8 @@ import VueMatomo from 'vue-matomo';
 import VueMeta from 'vue-meta';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify/lib';
-import {Touch} from 'vuetify/lib/directives';
-import {Settings} from 'luxon';
+import { Touch } from 'vuetify/lib/directives';
+import { Settings } from 'luxon';
 import VueCountdown from '@chenfengyuan/vue-countdown';
 
 import browserDetect from 'vue-browser-detect-plugin';
@@ -51,7 +51,7 @@ Vue.use(VueMatomo, {
   userId: undefined,
   cookieDomain: undefined,
   domains: undefined,
-  preInitActions: []
+  preInitActions: [],
 });
 
 Vue.use(VueMeta);
@@ -60,32 +60,34 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
-    component: Dashboard
+    component: Dashboard,
   },
   {
     path: '/dashboard',
-    component: DashboardCustom
+    component: DashboardCustom,
   },
   {
     path: '/privacy',
-    component: Privacy
+    component: Privacy,
   },
   {
     path: '/terms_and_conditions',
-    component: Terms
+    component: Terms,
   }, {
     path: '/iframe',
-    component: EmbedIframe
+    component: EmbedIframe,
   }, {
     path: '*',
-    component: PageNotFound
+    component: PageNotFound,
   },
 ];
-const router = new VueRouter({mode: 'history', base: process.env.BASE_URL, routes});
+const router = new VueRouter({ mode: 'history', base: process.env.BASE_URL, routes });
 
-Vue.use(Vuetify, {directives: {
-    Touch
-  }});
+Vue.use(Vuetify, {
+  directives: {
+    Touch,
+  },
+});
 
 Vue.use(browserDetect);
 
@@ -94,7 +96,7 @@ mdRendererLinksTargetBlank.link = function (href, title, text) { // eslint-disab
   const link = marked.Renderer.prototype.link.call(this, href, title, text);
   return link.replace('<a', '<a target="_blank" ');
 };
-marked.setOptions({renderer: mdRendererLinksTargetBlank});
+marked.setOptions({ renderer: mdRendererLinksTargetBlank });
 Vue.prototype.$marked = marked;
 
 const renderVue = async () => {
@@ -106,7 +108,7 @@ const renderVue = async () => {
   const vuetify = new Vuetify({
     theme: {
       options: {
-        customProperties: true
+        customProperties: true,
       },
       dark: false,
       // dark: mq.matches,
@@ -120,7 +122,7 @@ const renderVue = async () => {
           success: '#4CAF50',
           warning: '#FFC107',
           grey: '#AAA',
-          background: '#FFF'
+          background: '#FFF',
         },
         dark: {
           primary: store.state.config.appConfig ? store.state.config.appConfig.branding.primaryColor : '#004170',
@@ -131,10 +133,10 @@ const renderVue = async () => {
           success: '#4CAF50',
           warning: '#FFC107',
           grey: '#AAA',
-          background: '#121212'
-        }
-      }
-    }
+          background: '#121212',
+        },
+      },
+    },
   });
 
   try { // Chrome & Firefox
@@ -182,9 +184,9 @@ const renderVue = async () => {
         indicatorObject.indicator
       }`,
       trackEvent: (action, name, value) => window._paq.push(
-        ['trackEvent', action, name, value]
-      )
-    }
+        ['trackEvent', action, name, value],
+      ),
+    },
   });
 
   // Global filters
@@ -194,39 +196,38 @@ const renderVue = async () => {
     store,
     router,
     vuetify,
-    render: (h) => h(App)
+    render: (h) => h(App),
   }).$mount('#app');
 };
 
 if (store.state.dashboard ?. dashboardConfig ?. id) {
-  store.commit('dashboard/ADD_API', customDashboardApiFactory())
+  store.commit('dashboard/ADD_API', customDashboardApiFactory());
 
-  const id = store.state.dashboard ?. dashboardConfig ?. id
+  const id = store.state.dashboard ?. dashboardConfig ?. id;
   const editKey = store.state.dashboard ?. dashboardConfig ?. editKey;
 
-  store.state.dashboard.api.listen(id, editKey).then(response => {
-
+  store.state.dashboard.api.listen(id, editKey).then((response) => {
     if (response.error) {
       console.error(response);
       store.commit('dashboard/disconnect');
     }
 
 
-    response.features = response.features.map(f => {
-      const newF = Object.assign({}, f);
+    response.features = response.features.map((f) => {
+      const newF = { ...f };
       delete newF.id;
       newF.poi = f.id;
       return newF;
-    })
+    });
 
     store.commit('dashboard/SET', {
       ...response,
       ...(id && {
-        id
+        id,
       }),
       ...(editKey && {
-        editKey
-      })
+        editKey,
+      }),
     });
   });
 }
