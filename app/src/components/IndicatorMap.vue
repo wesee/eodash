@@ -9,6 +9,8 @@
     @update:center="centerUpdated"
     @update:bounds="boundsUpdated"
     v-resize="onResize"
+    :center="center"
+    :zoom="zoom"
     @ready="onMapReady()"
   >
     <l-control-attribution position="bottomright" prefix=''></l-control-attribution>
@@ -383,9 +385,15 @@ let dataF = emptyF;
 let compareF = emptyF;
 
 export default {
-  props: [
-    'currentIndicator',
-  ],
+  props: {
+    currentIndicator: Object,
+    zoomProp: {
+      required: false
+    },
+    centerProp: {
+      required: false
+    }
+  },
   components: {
     LMap,
     LTileLayer,
@@ -722,12 +730,15 @@ export default {
   methods: {
     zoomUpdated(zoom) {
       this.zoom = zoom;
+      this.$emit('update:zoom', zoom);
     },
     centerUpdated(center) {
       this.center = center;
+      this.$emit('update:center', center);
     },
     boundsUpdated(bounds) {
       this.bounds = bounds;
+      this.$emit('update:bounds', bounds);
     },
     onMapReady() {
       this.map = this.$refs.map.mapObject;
@@ -780,6 +791,7 @@ export default {
       if (!this.customAreaFeatures || this.validDrawnArea) {
         this.fetchFeatures('data');
       }
+      this.$emit('ready');
       setTimeout(() => {
         this.flyToBounds();
       }, 100);
@@ -1302,6 +1314,14 @@ export default {
     },
   },
   watch: {
+    zoomProp: {immediate: true, deep: true, handler(v) {
+      if(v)
+      this.zoom = v;
+    }},
+    centerProp: {immediate: true, deep: true, handler(v) {
+      if(v)
+      this.center = v;
+    }},
     enableCompare(on) {
       if (!on) {
         if (this.slider !== null) {

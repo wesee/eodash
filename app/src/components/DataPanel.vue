@@ -66,6 +66,8 @@
                   class="pt-0 fill-height"
                   :currentIndicator="sensorData.properties.indicatorObject"
                   v-on:fetchCustomAreaIndicator="scrollToCustomAreaIndicator"
+                  @update:center="c => center = c"
+                  @update:zoom="z => zoom = z"
                 />
                 <indicator-data
                   style="top: 0px; position: absolute;"
@@ -104,6 +106,8 @@
               style="top: 0px; position: absolute;"
               v-if="showMap"
               class="pt-0 fill-height"
+              @update:center="c => center = c"
+              @update:zoom="z => zoom = z"
             />
             <indicator-data
               style="top: 0px; position: absolute;"
@@ -149,7 +153,7 @@
               download csv
             </v-btn>
             <iframe-button :indicatorObject="indicatorObject"/>
-            <add-to-dashboard-button :indicatorObject="indicatorObject"/>
+            <add-to-dashboard-button :indicatorObject="indicatorObject" :zoom="zoom" :center="center"/>
           </div>
         </v-col>
         <v-col
@@ -277,6 +281,8 @@ export default {
     mounted: false,
     selectedSensorTab: 0,
     multipleTabCompare: null,
+    zoom: null,
+    center: null,
   }),
   computed: {
     ...mapGetters('features', [
