@@ -6,6 +6,7 @@ import { latLng, latLngBounds } from 'leaflet';
 import { shTimeFunction, shS2TimeFunction } from '@/utils';
 import { baseLayers, overlayLayers } from '@/config/layers';
 import { E13bRemovedFtrs } from '@/config/otherdata';
+import availableDates from '@/config/data_dates.json';
 
 export const dataPath = './eodash-data/internal/';
 export const dataEndpoints = [
@@ -195,6 +196,10 @@ export const indicatorsDefinition = Object.freeze({
     indicator: 'Throughput at principal rail stations',
     class: 'economic',
   },
+  E13c: {
+    class: 'economic',
+    story: '',
+  },
   E13b: {
     indicator: 'Throughput at principal hub airports',
     class: 'economic',
@@ -214,6 +219,12 @@ export const indicatorsDefinition = Object.freeze({
     indicator: 'Airports: airplanes traffic',
     class: 'economic',
     story: './eodash-data/stories/E13d',
+  },
+  E13d2: {
+    indicator: 'Airports: airplanes traffic',
+    class: 'economic',
+    story: './eodash-data/stories/E13d',
+    hideInFilters: true,
     baseLayers: [baseLayers.terrainLight, {
       ...baseLayers.cloudless,
       visible: true,
@@ -221,10 +232,51 @@ export const indicatorsDefinition = Object.freeze({
     midSubAoi: true,
     mapTimeLabelExtended: true,
     features: {
-      dateFormatFunction: (date) => DateTime.fromISO(date).toFormat("yyyyMMdd'T'HHmmss"),
-      url: './eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
+      dateFormatFunction: (date) => DateTime.fromISO(date).toFormat("yyyyMMdd'T'HHmm"),
+      url: './eodash-data/features/E13d/E13d_{aoiID}_{featuresTime}.geojson',
     },
     largeTimeDuration: true,
+  },
+  E13e: {
+    indicator: 'Maritime traffic: cargo',
+    class: 'economic',
+    story: './eodash-data/stories/E13e',
+  },
+  E13f: {
+    indicator: 'Maritime traffic: fishing',
+    hideInFilters: true,
+    class: 'economic',
+    story: './eodash-data/stories/E13e',
+  },
+  E13g: {
+    indicator: 'Maritime traffic: tanker',
+    hideInFilters: true,
+    class: 'economic',
+    story: './eodash-data/stories/E13e',
+  },
+  E13h: {
+    indicator: 'Maritime traffic: tug',
+    hideInFilters: true,
+    class: 'economic',
+    story: './eodash-data/stories/E13e',
+  },
+  E13i: {
+    indicator: 'Maritime traffic: search, rescue',
+    hideInFilters: true,
+    class: 'economic',
+    story: './eodash-data/stories/E13e',
+  },
+  E13l: {
+    indicator: 'Maritime traffic: pleasure craft',
+    hideInFilters: true,
+    class: 'economic',
+    story: './eodash-data/stories/E13e',
+  },
+  E13m: {
+    indicator: 'Maritime traffic: passenger',
+    hideInFilters: true,
+    class: 'economic',
+    story: './eodash-data/stories/E13e',
   },
   H1: {
     indicator: 'Number of temp. treatment sites',
@@ -313,10 +365,6 @@ export const indicatorsDefinition = Object.freeze({
     class: 'water',
     largeTimeDuration: true,
     largeSubAoi: true,
-    externalData: {
-      label: 'Copernicus Marine Service - Product Details',
-      url: 'https://resources.marine.copernicus.eu/?option=com_csw%20&view=details%20&product_id=OCEANCOLOUR_MED_CHL_L4_NRT_OBSERVATIONS_009_041',
-    },
     story: './eodash-data/stories/N3c',
   },
   N4c: {
@@ -342,19 +390,15 @@ export const indicatorsDefinition = Object.freeze({
 export const layerNameMapping = Object.freeze({
   // "inputdata" -> wms layer name and baseurl
   '[NEW] Planetscope COVID-19': {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'NEW_PLANETSCOPE_COVID-19',
   },
   'PlanetScope - COVID19': {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'NEW_PLANETSCOPE_COVID-19',
   },
   'Planetscope COVID-19': {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'NEW_PLANETSCOPE_COVID-19',
   },
   '[NEW] Planet COVID-19': {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'NEW_PLANETSCOPE_COVID-19',
   },
   '[NEW] Pleiades': {
@@ -362,7 +406,6 @@ export const layerNameMapping = Object.freeze({
     layers: 'NEW_PLEIADES',
   },
   'Pleiades - COVID19': {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'NEW_PLEIADES_COVID19',
   },
   'Deimos - COVID19': {
@@ -370,15 +413,12 @@ export const layerNameMapping = Object.freeze({
     layers: 'DEIMOS',
   },
   '[NEW] Pleiades COVID-19': {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'NEW_PLEIADES_COVID19',
   },
   '[NEW] Pleiades COVID19': {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'NEW_PLEIADES_COVID19',
   },
   '[NEW] Pleiades - 2.8m - COVID19': {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'NEW_PLEIADES_28_COVID19',
   },
   '[NEW] Pleiades 16bit': {
@@ -386,21 +426,17 @@ export const layerNameMapping = Object.freeze({
     layers: 'NEW_PLEIADES_16BIT',
   },
   'Sentinel 2 L2A': {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'SENTINEL-2-L2A-TRUE-COLOR',
     dateFormatFunction: shS2TimeFunction,
   },
   S2L2A: {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'SENTINEL-2-L2A-TRUE-COLOR',
     dateFormatFunction: shS2TimeFunction,
   },
   S1GRD: {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'E8_SENTINEL1',
   },
   'S1A - GRD': {
-    baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
     layers: 'E8_SENTINEL1',
   },
 });
@@ -434,7 +470,7 @@ export const overlayLayersRightMap = [{
   ...overlayLayers.eoxOverlay, visible: true,
 }];
 
-export const defaultWMSDisplay = {
+export const defaultLayersDisplay = {
   baseUrl: `https://services.sentinel-hub.com/ogc/wms/${shConfig.shInstanceId}`,
   protocol: 'WMS',
   dateFormatFunction: shTimeFunction,
@@ -444,6 +480,15 @@ export const defaultWMSDisplay = {
   opacity: 1,
   attribution: '{ <a href="https://race.esa.int/terms_and_conditions" target="_blank">Use of this data is subject to Articles 3 and 8 of the Terms and Conditions</a> }',
   minZoom: 7,
+  visible: true,
+};
+
+export const cmemsDisplay = {
+  tileSize: 256,
+  minZoom: 1,
+  layers: 'CHL',
+  legendUrl: 'eodash-data/data/cmems-legend.png',
+  dateFormatFunction: (date) => DateTime.fromISO(date).toFormat("yyyy-MM-dd'T00:00:00Z'"),
 };
 
 const getDailyDates = (start, end) => {
@@ -453,18 +498,6 @@ const getDailyDates = (start, end) => {
   while (currentDate <= stopDate) {
     dateArray.push(DateTime.fromISO(currentDate).toFormat('yyyy-MM-dd'));
     currentDate = DateTime.fromISO(currentDate).plus({ days: 1 });
-  }
-  return dateArray;
-};
-
-const getWeeklyDates = (start, end) => {
-  let currentDate = DateTime.fromISO(start);
-  const stopDate = DateTime.fromISO(end);
-
-  const dateArray = [];
-  while (currentDate <= stopDate) {
-    dateArray.push(DateTime.fromISO(currentDate).toFormat('yyyy-MM-dd'));
-    currentDate = DateTime.fromISO(currentDate).plus({ weeks: 1 });
   }
   return dateArray;
 };
@@ -538,9 +571,7 @@ export const globalIndicators = [
         time: getFortnightIntervalDates('2019-01-07', 'now'),
         inputData: [''],
         yAxis: 'Tropospheric NO2 (μmol/m2)',
-        customAreaIndicator: true,
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           name: 'Tropospheric NO2',
           layers: 'NO2-VISUALISATION',
@@ -602,11 +633,10 @@ export const globalIndicators = [
         },
         lastColorCode: null,
         aoi: null,
-        time: getDailyDates('2020-01-01', DateTime.utc().minus({ days: 2 }).toFormat('yyyy-LL-dd')),
+        time: getDailyDates(DateTime.utc().minus({ years: 1, days: -1 }).toFormat('yyyy-LL-dd'), DateTime.utc().minus({ days: 2 }).toFormat('yyyy-LL-dd')),
         inputData: [''],
         yAxis: 'NO2 (μmol/m2)',
         display: {
-          ...defaultWMSDisplay,
           styles: 'sh_OrangesTransparent40_surface_concentration',
           baseUrl: 'https://apps.ecmwf.int/wms/?token=public',
           name: 'CAMS daily averaged NO2',
@@ -638,11 +668,10 @@ export const globalIndicators = [
         },
         lastColorCode: null,
         aoi: null,
-        time: getDailyDates('2020-01-01', DateTime.utc().minus({ days: 2 }).toFormat('yyyy-LL-dd')),
+        time: getDailyDates(DateTime.utc().minus({ years: 1, days: -1 }).toFormat('yyyy-LL-dd'), DateTime.utc().minus({ days: 2 }).toFormat('yyyy-LL-dd')),
         inputData: [''],
         yAxis: 'PM2.5 (μg/m3)',
         display: {
-          ...defaultWMSDisplay,
           styles: 'sh_PurplesTransparent40_surface_concentration',
           baseUrl: 'https://apps.ecmwf.int/wms/?token=public',
           name: 'CAMS daily averaged PM2.5',
@@ -674,11 +703,10 @@ export const globalIndicators = [
         },
         lastColorCode: null,
         aoi: null,
-        time: getDailyDates('2020-01-01', DateTime.utc().minus({ days: 2 }).toFormat('yyyy-LL-dd')),
+        time: getDailyDates(DateTime.utc().minus({ years: 1, days: -1 }).toFormat('yyyy-LL-dd'), DateTime.utc().minus({ days: 2 }).toFormat('yyyy-LL-dd')),
         inputData: [''],
         yAxis: 'PM10 (μg/m3)',
         display: {
-          ...defaultWMSDisplay,
           styles: 'sh_GreensTransparent40_surface_concentration',
           baseUrl: 'https://apps.ecmwf.int/wms/?token=public',
           name: 'CAMS daily averaged PM2.5',
@@ -710,11 +738,10 @@ export const globalIndicators = [
         },
         lastColorCode: null,
         aoi: null,
-        time: getDailyDates('2020-01-01', DateTime.utc().minus({ days: 2 }).toFormat('yyyy-LL-dd')),
+        time: getDailyDates(DateTime.utc().minus({ years: 1, days: -1 }).toFormat('yyyy-LL-dd'), DateTime.utc().minus({ days: 2 }).toFormat('yyyy-LL-dd')),
         inputData: [''],
         yAxis: 'O3 (μg/m3)',
         display: {
-          ...defaultWMSDisplay,
           styles: 'sh_OrangesTransparent240_surface_concentration',
           baseUrl: 'https://apps.ecmwf.int/wms/?token=public',
           name: 'CAMS daily averaged PM2.5',
@@ -751,13 +778,12 @@ export const globalIndicators = [
           features: [{
             type: 'Feature',
             properties: {},
-            geometry: wkt.read('POLYGON((13.82676706185932 44.707877452151976,13.826080416351507 44.63853985102104,13.828140352874945 44.60726198073148,13.830543612152288 44.580858170237136,13.824707125335882 44.56324896519081,13.831230257660101 44.53388844187968,13.83226022592182 44.50059527839493,13.14012155404682 44.49471803960046,12.29417428842182 44.482961784844655,12.22825631967182 44.70494937295371,12.28318796029682 44.82439215066662,12.375198458343695 44.80027974205457,12.408844088226507 44.82134821071279,12.466865633636663 44.848433626253936,12.50840768685932 44.941643892166006,12.435623263031195 44.97274112720852,12.430816744476507 45.017413877251585,12.314430330902288 44.96496839839778,12.346874331146429 45.11150096790739,12.3191510187685 45.20785209529116,12.239371393829535 45.20857774137082,12.210467909485052 45.2901538238102,12.22276315560932 45.377400919461266,12.30790719857807 45.48533806813408,12.48368844857807 45.559425118958345,12.622390841156195 45.527685472129804,12.436309908539007 45.47089417163262,12.428413485199163 45.41838351593179,12.782894228607367 45.546202443810486,12.887307261139105 45.60069590187233,12.977987383514593 45.62249048564204,13.101626490265081 45.63083382762503,13.086563204437445 45.72456591874726,13.210159395843695 45.76864898557,13.344055269867132 45.73942388451784,13.406883333831976 45.72384688466227,13.44499215951557 45.67565051875911,13.56034860482807 45.78397406598729,13.65647897592182 45.76194293851278,13.773208712249945 45.66413479361571,13.71965036264057 45.5603866467064,13.48619088998432 45.44295880636075,13.59605417123432 45.16671702535331,13.71690378060932 44.97954140088225,13.778701876312445 44.951120616125884,13.81852731576557 44.86042018307063,13.82402047982807 44.77737580152348,13.82676706185932 44.707877452151976))').toJson(),
+            geometry: wkt.read('POLYGON((12.174395 44.778037,12.196361 44.816998,12.085149 45.405263,12.426024 45.583514,13.153667 45.779148,13.603981 45.811687,13.804426 45.675662,13.823647 45.596962,13.626039 45.443008,13.549156 45.433376,13.626039 45.323461,13.713905 45.095238,13.78383 44.980605,13.830519 44.892158,13.839389 44.499195,12.234821 44.481556,12.06659 44.581469,12.174395 44.778037))').toJson(),
           }],
         },
-        time: getWeeklyDates('2020-01-07', '2021-01-19'),
+        time: availableDates.N3_CUSTOM,
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           name: 'Water Quality Index',
           layers: 'N3_CUSTOM',
@@ -794,10 +820,9 @@ export const globalIndicators = [
             geometry: wkt.read('POLYGON((4.19585670915520126 43.49375380380885758, 4.19491064380215573 43.49564593451494687, 4.62253218337875094 43.49564593451494687, 4.69632528091630519 43.49753806522103616, 4.69537921556325966 43.48618528098449332, 4.6736197124432115 43.46442577786444161, 4.64523775185184462 43.45401905898093986, 4.67172758173712044 43.42090677162434531, 4.70389380374066945 43.41428431415302924, 4.71146232656503461 43.43698988262612204, 4.75592739815817644 43.43320562121393635, 4.78525542410258886 43.41806857556520782, 4.81647558075309234 43.38495628820861327, 4.83918114922618603 43.38495628820861327, 4.82877443034268428 43.40671579132866498, 4.81552951540004681 43.424691033036531, 4.81836771145918341 43.43604381727307384, 4.86661704446450738 43.41050005274084356, 4.87040130587668951 43.41523037950607034, 4.84012721457923156 43.44928873221571308, 4.85999458699318865 43.4682100392766273, 4.88459228617237251 43.42942135980175777, 4.89499900505587426 43.43793594797917024, 4.91297424676374028 43.43509775192003275, 4.92621916170637775 43.44172020939134882, 4.94608653412033483 43.49280773845580939, 5.21949942115050369 43.49753806522103616, 5.23558253215227776 43.4899695423966719, 5.24693531638882504 43.4672639739235791, 5.23842072821141436 43.43415168656698455, 5.21476909438527514 43.41428431415302924, 5.16557369602690564 43.39157874567993645, 5.08988846778326032 43.39157874567993645, 5.014203239539615 43.39252481103297754, 5.01893356630484355 43.3792798960903454, 5.03690880801270868 43.3565743276172455, 5.07096716072234965 43.34143728196851697, 5.11070190555026294 43.33859908590937948, 5.15327484643731371 43.34427547802765446, 5.21760729044441174 43.34049121661547588, 5.27247908092105533 43.35373613155811512, 5.30275317221851239 43.37265743861902223, 5.33208119816292569 43.36698104650074725, 5.35194857057688189 43.3565743276172455, 5.36140922410733811 43.34143728196851697, 5.36992381228474791 43.32535417096674735, 5.36992381228474791 43.3130553213771492, 5.36613955087256578 43.29791827572842067, 5.36613955087256578 43.28845762219796711, 5.37654626975606753 43.27521270725532787, 5.38600692328652286 43.26102172695964754, 5.38316872722738626 43.25250713878223507, 5.37276200834388451 43.24210041989873332, 5.35478676663601938 43.23263976636827977, 5.35005643987079083 43.22128698213172981, 5.35857102804820151 43.21088026324823517, 5.37749233510911218 43.21655665536650304, 5.39925183822916033 43.21939485142564052, 5.42195740670225401 43.21561059001346194, 5.45412362870580303 43.21939485142564052, 5.50331902706417253 43.20141960971777451, 5.50615722312331002 42.99990768951906972, 4.19301851309606466 42.99896162416602152, 4.19585670915520126 43.49375380380885758))').toJson(),
           }],
         },
-        time: getWeeklyDates('2020-01-07', '2021-01-19'),
+        time: availableDates.N3_CUSTOM,
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           name: 'Water Quality Index',
           layers: 'N3_CUSTOM',
@@ -831,13 +856,12 @@ export const globalIndicators = [
           features: [{
             type: 'Feature',
             properties: {},
-            geometry: wkt.read('POLYGON((13.82676706185932 44.707877452151976,13.826080416351507 44.63853985102104,13.828140352874945 44.60726198073148,13.830543612152288 44.580858170237136,13.824707125335882 44.56324896519081,13.831230257660101 44.53388844187968,13.83226022592182 44.50059527839493,13.14012155404682 44.49471803960046,12.29417428842182 44.482961784844655,12.22825631967182 44.70494937295371,12.28318796029682 44.82439215066662,12.375198458343695 44.80027974205457,12.408844088226507 44.82134821071279,12.466865633636663 44.848433626253936,12.50840768685932 44.941643892166006,12.435623263031195 44.97274112720852,12.430816744476507 45.017413877251585,12.314430330902288 44.96496839839778,12.346874331146429 45.11150096790739,12.3191510187685 45.20785209529116,12.239371393829535 45.20857774137082,12.210467909485052 45.2901538238102,12.22276315560932 45.377400919461266,12.30790719857807 45.48533806813408,12.48368844857807 45.559425118958345,12.622390841156195 45.527685472129804,12.436309908539007 45.47089417163262,12.428413485199163 45.41838351593179,12.782894228607367 45.546202443810486,12.887307261139105 45.60069590187233,12.977987383514593 45.62249048564204,13.101626490265081 45.63083382762503,13.086563204437445 45.72456591874726,13.210159395843695 45.76864898557,13.344055269867132 45.73942388451784,13.406883333831976 45.72384688466227,13.44499215951557 45.67565051875911,13.56034860482807 45.78397406598729,13.65647897592182 45.76194293851278,13.773208712249945 45.66413479361571,13.71965036264057 45.5603866467064,13.48619088998432 45.44295880636075,13.59605417123432 45.16671702535331,13.71690378060932 44.97954140088225,13.778701876312445 44.951120616125884,13.81852731576557 44.86042018307063,13.82402047982807 44.77737580152348,13.82676706185932 44.707877452151976))').toJson(),
+            geometry: wkt.read('POLYGON((12.174395 44.778037,12.196361 44.816998,12.085149 45.405263,12.426024 45.583514,13.153667 45.779148,13.603981 45.811687,13.804426 45.675662,13.823647 45.596962,13.626039 45.443008,13.549156 45.433376,13.626039 45.323461,13.713905 45.095238,13.78383 44.980605,13.830519 44.892158,13.839389 44.499195,12.234821 44.481556,12.06659 44.581469,12.174395 44.778037))').toJson(),
           }],
         },
-        time: getWeeklyDates('2020-01-07', '2021-01-19'),
+        time: availableDates.N3_CUSTOM_TSMNN,
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           name: 'Water Quality Index',
           layers: 'N3_CUSTOM_TSMNN',
@@ -874,10 +898,9 @@ export const globalIndicators = [
             geometry: wkt.read('POLYGON((4.19585670915520126 43.49375380380885758, 4.19491064380215573 43.49564593451494687, 4.62253218337875094 43.49564593451494687, 4.69632528091630519 43.49753806522103616, 4.69537921556325966 43.48618528098449332, 4.6736197124432115 43.46442577786444161, 4.64523775185184462 43.45401905898093986, 4.67172758173712044 43.42090677162434531, 4.70389380374066945 43.41428431415302924, 4.71146232656503461 43.43698988262612204, 4.75592739815817644 43.43320562121393635, 4.78525542410258886 43.41806857556520782, 4.81647558075309234 43.38495628820861327, 4.83918114922618603 43.38495628820861327, 4.82877443034268428 43.40671579132866498, 4.81552951540004681 43.424691033036531, 4.81836771145918341 43.43604381727307384, 4.86661704446450738 43.41050005274084356, 4.87040130587668951 43.41523037950607034, 4.84012721457923156 43.44928873221571308, 4.85999458699318865 43.4682100392766273, 4.88459228617237251 43.42942135980175777, 4.89499900505587426 43.43793594797917024, 4.91297424676374028 43.43509775192003275, 4.92621916170637775 43.44172020939134882, 4.94608653412033483 43.49280773845580939, 5.21949942115050369 43.49753806522103616, 5.23558253215227776 43.4899695423966719, 5.24693531638882504 43.4672639739235791, 5.23842072821141436 43.43415168656698455, 5.21476909438527514 43.41428431415302924, 5.16557369602690564 43.39157874567993645, 5.08988846778326032 43.39157874567993645, 5.014203239539615 43.39252481103297754, 5.01893356630484355 43.3792798960903454, 5.03690880801270868 43.3565743276172455, 5.07096716072234965 43.34143728196851697, 5.11070190555026294 43.33859908590937948, 5.15327484643731371 43.34427547802765446, 5.21760729044441174 43.34049121661547588, 5.27247908092105533 43.35373613155811512, 5.30275317221851239 43.37265743861902223, 5.33208119816292569 43.36698104650074725, 5.35194857057688189 43.3565743276172455, 5.36140922410733811 43.34143728196851697, 5.36992381228474791 43.32535417096674735, 5.36992381228474791 43.3130553213771492, 5.36613955087256578 43.29791827572842067, 5.36613955087256578 43.28845762219796711, 5.37654626975606753 43.27521270725532787, 5.38600692328652286 43.26102172695964754, 5.38316872722738626 43.25250713878223507, 5.37276200834388451 43.24210041989873332, 5.35478676663601938 43.23263976636827977, 5.35005643987079083 43.22128698213172981, 5.35857102804820151 43.21088026324823517, 5.37749233510911218 43.21655665536650304, 5.39925183822916033 43.21939485142564052, 5.42195740670225401 43.21561059001346194, 5.45412362870580303 43.21939485142564052, 5.50331902706417253 43.20141960971777451, 5.50615722312331002 42.99990768951906972, 4.19301851309606466 42.99896162416602152, 4.19585670915520126 43.49375380380885758))').toJson(),
           }],
         },
-        time: getWeeklyDates('2020-01-07', '2021-01-19'),
+        time: availableDates.N3_CUSTOM_TSMNN,
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           name: 'Water Quality Index',
           layers: 'N3_CUSTOM_TSMNN',
@@ -911,11 +934,10 @@ export const globalIndicators = [
         eoSensor: ['2017-06-30', '2018-06-30', '2019-06-30', '2020-06-30'],
         aoi: null,
         aoiID: 'W2',
-        time: ['2017-04-01', '2018-04-01', '2019-04-01', '2020-04-01'],
+        time: availableDates.E12C_NEW_MOTORWAY,
         inputData: [''],
         yAxis: 'Number of trucks detected',
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           name: 'Aggregated Truck Traffic 10km',
           layers: 'E12C_NEW_MOTORWAY',
@@ -1041,11 +1063,10 @@ export const globalIndicators = [
         eoSensor: ['2017-06-30', '2018-06-30', '2019-06-30', '2020-06-30'],
         aoi: null,
         aoiID: 'W3',
-        time: ['2017-04-01', '2018-04-01', '2019-04-01', '2020-04-01'],
+        time: availableDates.E12D_NEW_PRIMARYROADS,
         inputData: [''],
         yAxis: 'Number of trucks detected',
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           name: 'Aggregated Truck Traffic 10km',
           layers: 'E12D_NEW_PRIMARYROADS',
@@ -1174,10 +1195,9 @@ export const globalIndicators = [
             geometry: wkt.read('POLYGON((2.516544 40.485512,2.522036 41.562459,2.291387 41.480243,2.211372 41.416219,2.164693 41.3132,2.049368 41.27401,1.917569 41.26782,1.692412 41.212083,1.448034 41.174899,1.266809 41.129423,1.16796 41.077707,0.950799 41.027932,0.726123 40.810478,0.849188 40.722691,0.85468 40.68523,0.659705 40.6644,0.549872 40.576882,0.483966 40.485017,2.516544 40.485512))').toJson(),
           }],
         },
-        time: getWeeklyDates('2020-11-03', '2021-01-19'),
+        time: availableDates.N3_CUSTOM,
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           name: 'Water Quality Index',
           layers: 'N3_CUSTOM',
@@ -1214,10 +1234,9 @@ export const globalIndicators = [
             geometry: wkt.read('POLYGON((2.516544 40.485512,2.522036 41.562459,2.291387 41.480243,2.211372 41.416219,2.164693 41.3132,2.049368 41.27401,1.917569 41.26782,1.692412 41.212083,1.448034 41.174899,1.266809 41.129423,1.16796 41.077707,0.950799 41.027932,0.726123 40.810478,0.849188 40.722691,0.85468 40.68523,0.659705 40.6644,0.549872 40.576882,0.483966 40.485017,2.516544 40.485512))').toJson(),
           }],
         },
-        time: getWeeklyDates('2020-11-03', '2021-01-19'),
+        time: availableDates.N3_CUSTOM_TSMNN,
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           name: 'Water Quality Index',
           layers: 'N3_CUSTOM_TSMNN',
@@ -1233,7 +1252,7 @@ export const globalIndicators = [
       indicatorObject: {
         dataLoadFinished: true,
         country: 'all',
-        city: 'Mediterranean',
+        city: 'Europe',
         siteName: 'global',
         description: 'CMEMS Water Quality',
         indicator: 'N3c',
@@ -1241,26 +1260,45 @@ export const globalIndicators = [
         indicatorName: 'CMEMS Water Quality',
         subAoi: {
           type: 'FeatureCollection',
-          features: [{
-            type: 'Feature',
-            properties: {},
-            geometry: wkt.read('POLYGON((-6 30,36.3 30,36.3 45.8,-6 45.8,-6 30))').toJson(),
-          }],
+          features: [],
         },
         lastColorCode: null,
         aoi: null,
         aoiID: 'World',
-        time: getDailyDates('2020-01-01', DateTime.utc().minus({ days: 1 }).toFormat('yyyy-LL-dd')),
+        time: getDailyDates('2020-01-07', DateTime.utc().minus({ days: 2 }).toFormat('yyyy-LL-dd')),
         inputData: [''],
-        display: {
-          ...defaultWMSDisplay,
-          baseUrl: 'https://nrt.cmems-du.eu/thredds/wms/dataset-oc-med-chl-multi-l4-interp_1km_daily-rt-v02?COLORSCALERANGE=0.03%2C10&STYLES=boxfill%2Frainbow',
-          name: 'CMEMS',
-          layers: 'CHL',
-          minZoom: 1,
-          legendUrl: 'eodash-data/data/cmems-legend.png',
-          dateFormatFunction: (date) => DateTime.fromISO(date).toFormat("yyyy-MM-dd'T00:00:00Z'"),
+        externalData: {
+          label: 'Copernicus Marine Service - Product Details',
+          url: 'https://resources.marine.copernicus.eu/?option=com_csw%20&view=details%20&product_id=OCEANCOLOUR_MED_CHL_L4_NRT_OBSERVATIONS_009_041',
         },
+        display: [{
+          name: 'CHL L4 Product',
+          legendUrl: 'eodash-data/data/cmems-legend.png',
+          combinedLayers: [
+            {
+              ...cmemsDisplay,
+              baseUrl: 'https://nrt.cmems-du.eu/thredds/wms/dataset-oc-atl-bio-multi-l4-chl_interpolated_1km_daily-rt?COLORSCALERANGE=0.03%2C30&STYLES=boxfill%2Frainbow',
+              name: 'Atlantic coast CHL L4 Product',
+              bounds: latLngBounds(latLng([20, -45]), latLng([66, 10.5])),
+            }, {
+              ...cmemsDisplay,
+              baseUrl: 'https://nrt.cmems-du.eu/thredds/wms/dataset-oc-med-chl-multi-l4-interp_1km_daily-rt-v02?COLORSCALERANGE=0.03%2C30&STYLES=boxfill%2Frainbow',
+              name: 'Mediterranean CHL L4 Product',
+              bounds: latLngBounds(latLng([30, -6]), latLng([46, 37])),
+            }, {
+              ...cmemsDisplay,
+              baseUrl: 'https://nrt.cmems-du.eu/thredds/wms/dataset-oc-bs-chl-multi-l4-interp_1km_daily-rt-v02?COLORSCALERANGE=0.03%2C30&STYLES=boxfill%2Frainbow',
+              name: 'Black sea CHL L4 Product',
+              bounds: latLngBounds(latLng([40, 26.5]), latLng([48, 42])),
+            },
+          ],
+        }, {
+          ...cmemsDisplay,
+          baseUrl: 'https://nrt.cmems-du.eu/thredds/wms/dataset-oc-bal-chl-olci_a-l3-nn_1km_daily-rt-v02?COLORSCALERANGE=0.03%2C30&STYLES=boxfill%2Frainbow',
+          name: 'Baltic sea CHL L3 Product',
+          visible: false,
+          bounds: latLngBounds(latLng([53.25, 9]), latLng([65.85, 30.5])),
+        }],
       },
     },
   },
@@ -1288,10 +1326,9 @@ export const globalIndicators = [
           }],
         },
         lastColorCode: null,
-        time: ['2020-02-04', '2020-04-13', '2020-07-17'],
+        time: availableDates['ICEYE-E3'],
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           layers: 'ICEYE-E3',
           minZoom: 5,
@@ -1332,10 +1369,9 @@ export const globalIndicators = [
           }],
         },
         lastColorCode: null,
-        time: ['2020-03-20'],
+        time: availableDates['ICEYE-E11'],
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           layers: 'ICEYE-E11',
           minZoom: 5,
@@ -1377,10 +1413,9 @@ export const globalIndicators = [
           }],
         },
         lastColorCode: null,
-        time: ['2020-02-07', '2020-04-13'],
+        time: availableDates['ICEYE-E11A'],
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           layers: 'ICEYE-E11A',
           minZoom: 5,
@@ -1410,7 +1445,7 @@ export const globalIndicators = [
         country: ['GB'],
         city: 'Weymouth',
         description: 'Ports: throughput',
-        indicator: 'E12b',
+        indicator: 'E13c',
         lastIndicatorValue: null,
         indicatorName: 'Ports: throughput',
         subAoi: {
@@ -1422,10 +1457,9 @@ export const globalIndicators = [
           }],
         },
         lastColorCode: null,
-        time: ['2020-08-29'],
+        time: availableDates['ICEYE-E12B'],
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           layers: 'ICEYE-E12B',
           minZoom: 5,
@@ -1433,7 +1467,7 @@ export const globalIndicators = [
           name: 'Weimouth ships',
           features: {
             dateFormatFunction: (date) => DateTime.fromISO(date).toFormat('yyyyMMdd'),
-            url: './eodash-data/features/{indicator}/{indicator}_{aoiID}_{featuresTime}.geojson',
+            url: './eodash-data/features/E12b/E12b_{aoiID}_{featuresTime}.geojson',
           },
           baseLayers: [{
             ...baseLayers.cloudless,
@@ -1470,7 +1504,6 @@ export const globalIndicators = [
         time: ['2020-05-12T13:35:00'],
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           dateFormatFunction: (date) => DateTime.fromISO(date).toFormat('yyyy-MM-dd'),
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           layers: 'ICEYE-E13B',
@@ -1517,7 +1550,6 @@ export const globalIndicators = [
         time: ['2020-03-20T03:50:00', '2020-08-25T03:15:00'],
         inputData: [''],
         display: {
-          ...defaultWMSDisplay,
           dateFormatFunction: (date) => DateTime.fromISO(date).toFormat('yyyy-MM-dd'),
           baseUrl: `https://shservices.mundiwebservices.com/ogc/wms/${shConfig.shInstanceId}`,
           layers: 'ICEYE-E13B',

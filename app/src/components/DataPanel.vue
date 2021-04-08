@@ -2,7 +2,7 @@
   <div style="height: auto;"
     :style="$vuetify.breakpoint.mdAndDown && 'padding-bottom: 100px'"
   >
-    <v-container class="pt-0" :class="showFullScreen && 'showFullScreenButton'">
+    <v-container class="pt-0">
       <v-row v-if="indicatorObject">
         <v-col
           cols="12"
@@ -41,7 +41,7 @@
                 class="fill-height"
                 :style="`height: ${$vuetify.breakpoint.mdAndUp ? (expanded ? 70 : 40) : 60}vh;`"
               >
-                <full-screen-button v-if="showFullScreen" />
+                <full-screen-button />
                 <div
                   style="height: 100%;z-index: 500; position: relative;"
                   v-if="$vuetify.breakpoint.mdAndDown && !dataInteract"
@@ -83,7 +83,7 @@
             class="fill-height"
             :style="`height: ${$vuetify.breakpoint.mdAndUp ? (expanded ? 70 : 40) : 60}vh;`"
           >
-            <full-screen-button v-if="showFullScreen" />
+            <full-screen-button />
             <div
               style="height: 100%;z-index: 500; position: relative;"
               v-if="$vuetify.breakpoint.mdAndDown && !dataInteract"
@@ -122,6 +122,7 @@
           sm="5"
           class="py-0 my-0 d-flex align-center"
           :class="$vuetify.breakpoint.xsOnly ? 'justify-center' : 'justify-space-between'"
+          v-if="!isFullScreen"
         >
           <small v-if="indicatorObject && indicatorObject.updateFrequency">
             <span
@@ -138,6 +139,7 @@
           cols="12"
           sm="7"
           class="py-0 my-0"
+          v-if="!isFullScreen"
         >
           <div :class="$vuetify.breakpoint.xsOnly ? 'text-center' : 'text-right'">
             <v-btn
@@ -147,7 +149,7 @@
               :href="dataHrefCSV"
               :download="downloadFileName"
               target="_blank"
-              v-if="indicatorObject && !showMap"
+              v-if="indicatorObject && !showMap && !isFullScreen"
             >
               <v-icon left>mdi-download</v-icon>
               download csv
@@ -160,6 +162,7 @@
           cols="12"
           ref="customAreaIndicator"
           class="pa-0"
+          v-if="!isFullScreen"
         >
           <v-card
             v-if="customAreaIndicator"
@@ -190,7 +193,7 @@
         <v-col
           cols="12"
         >
-        <div>
+        <div v-if="!isFullScreen">
             <expandable-content>
               <div
                 v-html="story"
@@ -294,11 +297,7 @@ export default {
       'appConfig',
       'baseConfig',
     ]),
-    showFullScreen() {
-      const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/); // eslint-disable-line
-      const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      return !isSafari && !iOS;
-    },
+    ...mapState(['isFullScreen']),
     story() {
       let markdown;
       try {
@@ -453,5 +452,14 @@ export default {
 }
 .chart {
   background: #fff;
+}
+
+.v-card.fullscreenElement {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: 100vh !important;
 }
 </style>

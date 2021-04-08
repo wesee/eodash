@@ -8,6 +8,7 @@
           :headers="headers"
           :items="allFeatures"
           :items-per-page="10"
+          :item-class="f => f.indicatorObject.updateFrequency && f.indicatorObject.updateFrequency.toLowerCase() === 'archived' ? 'archived-row' : ''"
           class="featureTable elevation-1"
           @click:row="openFeature"
           multi-sort
@@ -26,6 +27,18 @@
               {{ item.indicatorValue.toLowerCase() }}
             </v-chip>
           </template>
+          <template v-slot:item.country="{ item }">
+            <div v-if="Array.isArray(item.country)" class="table-flag d-flex justify-center" >
+              <span v-for="(country, i) in item.country" :key="i" class="table-flag">
+                <v-icon v-if="country === 'all'" class="ml-1">mdi-earth</v-icon>
+                <country-flag v-else :country="country" size="normal"></country-flag>
+              </span>
+            </div>
+            <div v-else class="d-flex justify-center">
+              <v-icon v-if="item.country === 'all'" class="ml-1">mdi-earth</v-icon>
+              <country-flag v-else :country="item.country" size="normal"></country-flag>
+            </div>
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
@@ -39,7 +52,13 @@ import {
   mapState,
 } from 'vuex';
 
+import CountryFlag from 'vue-country-flag';
+
+
 export default {
+  components: {
+    CountryFlag,
+  },
   computed: {
     ...mapGetters('features', ['getGroupedFeatures']),
     ...mapState('config', ['baseConfig']),
@@ -90,7 +109,7 @@ export default {
           color = this.getIndicatorColor(indObj.lastColorCode);
         }
         if (Object.prototype.hasOwnProperty.call(indObj, 'indicator')
-          && ['N1', 'N1a', 'N1b', 'N3b'].includes(indObj.indicator)) {
+          && ['N1', 'N1a', 'N1b', 'N3b', 'E12b'].includes(indObj.indicator)) {
           color = this.getIndicatorColor('BLUE');
           if (indObj.aoi === null) {
             color = 'black';
@@ -149,6 +168,16 @@ export default {
 .featureTable {
   ::v-deep tr {
     cursor: pointer;
+  }
+
+  ::v-deep .archived-row td {
+    opacity: 0.65;
+  }
+}
+
+.table-flag-list {
+  .table-flag:not(:last-child) {
+    margin-right: .3rem;
   }
 }
 </style>

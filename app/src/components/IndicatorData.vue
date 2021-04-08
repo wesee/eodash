@@ -1,7 +1,9 @@
 <template>
   <div style="width: 100%; height: 100%;"
     v-if="!['E10a2', 'E10a3', 'E10a6', 'E10a7', 'E10a8',
-      'E10c', 'N1', 'N3', 'N3b', 'E8', 'N1a', 'N1b', 'N1c', 'N1d']
+      'E10c', 'N1', 'N3', 'N3b', 'E8',
+      'E13e', 'E13f', 'E13g', 'E13h', 'E13i', 'E13l', 'E13m',
+      'N1a', 'N1b', 'N1c', 'N1d', 'E12b']
       .includes(indicatorObject.indicator)">
       <bar-chart v-if='datacollection'
         id="chart"
@@ -126,8 +128,8 @@ export default {
       const indicatorCode = indicator.indicator;
       let dataCollection;
       const refColors = [
-        '#cb4', '#a37', '#47a', '#a67', '#283', '#bbb',
-        '#6ce', '#994499', '#22aa99', '#aaaa11', '#6633cc', '#e67300',
+        '#22aa99', '#a37', '#47a', '#a67', '#283', '#bbb',
+        '#6ce', '#994499', '#aaaa11', '#6633cc', '#e67300',
       ];
       if (indicator) {
         let labels = [];
@@ -217,7 +219,7 @@ export default {
             data: [refData[3], measData[3], measData[8]],
             backgroundColor: refColors[3],
           });
-        } else if (['E10a2', 'E10a6', 'E10a7', 'E8'].includes(indicatorCode)) {
+        } else if (['E10a2', 'E10a6', 'E10a7', 'E8', 'E13e', 'E13f', 'E13g', 'E13h', 'E13i', 'E13l', 'E13m'].includes(indicatorCode)) {
           const uniqueRefs = [];
           const uniqueMeas = [];
           const referenceValue = indicator.referenceValue.map(Number);
@@ -241,6 +243,7 @@ export default {
             fill: false,
             borderColor: refColors[1],
             backgroundColor: refColors[1],
+            borderWidth: 2,
           });
           if (uniqueRefs.length > 0) {
             datasets.push({
@@ -249,6 +252,7 @@ export default {
               fill: false,
               borderColor: refColors[0],
               backgroundColor: refColors[0],
+              borderWidth: 2,
             });
           }
         } else if (['N2', 'E10c'].includes(indicatorCode)) {
@@ -323,6 +327,7 @@ export default {
             backgroundColor: refColors[0],
             borderColor: refColors[0],
             spanGaps: false,
+            borderWidth: 2,
           });
           datasets.push({
             label: 'Median',
@@ -424,17 +429,6 @@ export default {
           }
 
           datasets.push({
-            label: 'hide_',
-            data: measurement.map((val) => (
-              Number.isNaN(val) ? Number.NaN : (10 ** val)
-            )),
-            fill: false,
-            showLine: false,
-            backgroundColor: colors,
-            borderColor: colors,
-            spanGaps: false,
-          });
-          datasets.push({
             label: 'Weekly climatology of chlorophyll conc. (CHL_clim) 2017-2019',
             data: referenceValue,
             fill: false,
@@ -446,7 +440,7 @@ export default {
           datasets.push({
             label: 'Standard deviation (STD)',
             data: stdDevMax,
-            fill: 3,
+            fill: '+1',
             pointRadius: 0,
             spanGaps: false,
             backgroundColor: 'rgba(0,0,0,0.1)',
@@ -456,7 +450,7 @@ export default {
           datasets.push({
             label: 'hide_',
             data: stdDevMin,
-            fill: 2,
+            fill: '-1',
             pointRadius: 0,
             spanGaps: false,
             backgroundColor: 'rgba(0,0,0,0.0)',
@@ -478,14 +472,26 @@ export default {
           });
 
           Object.entries(indicatorValues).forEach(([key, value]) => {
+            const currMeas = measurement.map((row, i) => {
+              let val = row;
+              if (indicator.indicatorValue[i] !== key.toUpperCase()) {
+                val = NaN;
+              }
+              return val;
+            });
             datasets.push({
               label: key,
-              data: [],
+              data: currMeas.map((val) => (
+                Number.isNaN(val) ? Number.NaN : (10 ** val)
+              )),
               backgroundColor: value,
               borderColor: value,
+              fill: false,
+              showLine: false,
+              spanGaps: false,
             });
           });
-        } else if (['N1a', 'N1b', 'N1c', 'N1d'].includes(indicatorCode)) {
+        } else if (['N1a', 'N1b', 'N1c', 'N1d', 'E12b'].includes(indicatorCode)) {
           const maxRef = [];
           const minRef = [];
           const mean7dRef = [];
@@ -508,7 +514,7 @@ export default {
           });
 
           datasets.push({
-            label: '2020',
+            label: 'Value',
             data: measurement.map((meas, i) => ({ y: meas, t: indicator.time[i] })),
             backgroundColor: 'rgba(255,255,255,0.0)',
             borderColor: 'red',
@@ -517,7 +523,7 @@ export default {
             borderWidth: 1.5,
           });
           datasets.push({
-            label: '2020 7d mean',
+            label: '7-day mean',
             data: mean7d2020,
             backgroundColor: 'rgba(255,255,255,0.0)',
             pointRadius: 0,
@@ -761,7 +767,7 @@ export default {
         },
       };
       if (!Number.isNaN(reference)
-        && !['E10a1', 'E10a2', 'E10a5', 'E10a6', 'E10a7', 'N4c', 'E8', 'E12c', 'E12d', 'E12b']
+        && !['E10a1', 'E10a2', 'E10a5', 'E10a6', 'E10a7', 'N4c', 'E8', 'E13e', 'E13f', 'E13g', 'E13h', 'E13i', 'E13l', 'E13m', 'E12c', 'E12d']
           .includes(indicatorCode)) {
         annotations.push({
           ...defaultAnnotationSettings,
@@ -831,7 +837,7 @@ export default {
             // one year
             let start = DateTime.fromISO(lckTs[i].start);
             let end = DateTime.fromISO(lckTs[i].end);
-            if (['E10a2', 'E10a6', 'E10a7', 'E10c', 'E8'].includes(indicatorCode)) {
+            if (['E10a2', 'E10a6', 'E10a7', 'E10c', 'E8', 'E13e', 'E13f', 'E13g', 'E13h', 'E13i', 'E13l', 'E13m'].includes(indicatorCode)) {
               start = start.set({ year: 2000 });
               end = end.set({ year: 2000 });
             }
@@ -869,7 +875,7 @@ export default {
         }
       }
 
-      if (['E10a2', 'E10a6', 'E10a7', 'E10c', 'E8'].includes(indicatorCode)) {
+      if (['E10a2', 'E10a6', 'E10a7', 'E10c', 'E8', 'E13e', 'E13f', 'E13g', 'E13h', 'E13i', 'E13l', 'E13m'].includes(indicatorCode)) {
         /* Recalculate to get min max months in data converted to one year */
         timeMinMax = this.getMinMaxDate(
           this.indicatorObject.time.map((date) => (
@@ -1050,7 +1056,7 @@ export default {
         );
       }
 
-      if (['E12b', 'E1a', 'E1', 'E2', 'E2_S2', 'E1a_S2', 'E1_S2'].includes(indicatorCode)) {
+      if (['E12b', 'E1a', 'E1', 'E2', 'E2_S2', 'E1a_S2', 'E1_S2', 'E13d'].includes(indicatorCode)) {
       // update used yaxis chart min to be min value
         yAxes[0].ticks.suggestedMin = Math.min(
           ...this.indicatorObject.measurement
