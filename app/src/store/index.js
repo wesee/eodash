@@ -37,7 +37,7 @@ const store = new Vuex.Store({
   mutations: {
     changeFullScreen(state, val) {
       state.isFullScreen = val;
-    }
+    },
   },
   plugins: [vuexLocal.plugin],
 });
