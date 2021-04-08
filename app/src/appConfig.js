@@ -166,6 +166,7 @@ module.exports = [
       { code: 'BE', region: 'EUROPE' },
       { code: 'HR', region: 'EUROPE' },
       { code: 'FR', region: 'EUROPE' },
+      { code: 'GB', region: 'EUROPE' },
       { code: 'DE', region: 'EUROPE' },
       { code: 'IT', region: 'EUROPE' },
       { code: 'SI', region: 'EUROPE' },
