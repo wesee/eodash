@@ -108,40 +108,8 @@ export default {
     } else {
       this.comingSoon = false;
     }
-  },
-  mounted() {
     // Listen for features added, and select if poi in query
     this.$store.subscribe((mutation) => {
-      if (mutation.type === 'features/ADD_NEW_FEATURES') {
-        // Read route query and set selected poi
-        const { poi } = this.$route.query;
-        let selectedFeature = null;
-        if (poi && poi.includes('-')) {
-          const aoiId = poi.split('-')[0];
-          const indicatorCode = poi.split('-')[1];
-          selectedFeature = this.$store.state.features.allFeatures.find((f) => {
-            const { indicatorObject } = f.properties;
-            return indicatorObject.aoiID === aoiId
-              && indicatorObject.indicator === indicatorCode;
-          });
-        }
-        this.$store.commit('indicators/SET_SELECTED_INDICATOR', selectedFeature ? selectedFeature.properties.indicatorObject : null);
-        this.$store.commit('indicators/SET_SELECTED_INDICATOR', selectedFeature ? selectedFeature.properties.indicatorObject : null);
-
-        // Read route query and validate country and indicator if in query
-        const { country } = this.$route.query;
-        const { indicator } = this.$route.query;
-        // validate query for country - need to be among available
-        const selectedCountry = this.getCountryItems
-          .map((item) => item.code).flat().find((f) => f === country);
-        const selectedIndicator = this.getIndicators
-          .map((item) => item.code).find((f) => f === indicator);
-        this.$store.commit('features/INIT_FEATURE_FILTER', {
-          countries: selectedCountry,
-          indicators: selectedIndicator,
-        });
-      }
-
       // Url query replacement
       if (mutation.type === 'features/SET_FEATURE_FILTER') {
         if (Array.isArray(mutation.payload.countries) && mutation.payload.countries.length === 0) {
@@ -198,6 +166,34 @@ export default {
           this.trackEvent('indicators', 'deselect_indicator');
         }
       }
+    });
+  },
+  mounted() {
+    const { poi } = this.$route.query;
+    let selectedFeature = null;
+    if (poi && poi.includes('-')) {
+      const aoiId = poi.split('-')[0];
+      const indicatorCode = poi.split('-')[1];
+      selectedFeature = this.$store.state.features.allFeatures.find((f) => {
+        const { indicatorObject } = f.properties;
+        return indicatorObject.aoiID === aoiId
+          && indicatorObject.indicator === indicatorCode;
+      });
+    }
+    this.$store.commit('indicators/SET_SELECTED_INDICATOR', selectedFeature ? selectedFeature.properties.indicatorObject : null);
+    this.$store.commit('indicators/SET_SELECTED_INDICATOR', selectedFeature ? selectedFeature.properties.indicatorObject : null);
+
+    // Read route query and validate country and indicator if in query
+    const { country } = this.$route.query;
+    const { indicator } = this.$route.query;
+    // validate query for country - need to be among available
+    const selectedCountry = this.getCountryItems
+      .map((item) => item.code).flat().find((f) => f === country);
+    const selectedIndicator = this.getIndicators
+      .map((item) => item.code).find((f) => f === indicator);
+    this.$store.commit('features/INIT_FEATURE_FILTER', {
+      countries: selectedCountry,
+      indicators: selectedIndicator,
     });
     this.setAreaFromQuery();
   },
