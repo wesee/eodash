@@ -92,4 +92,8 @@
     // background: #363636 !important;
     filter: invert(1);
   }
+  .leaflet-control-mouseposition, .leaflet-control-attribution {
+    background: #363636 !important;
+    color: white !important;
+  }
 }
