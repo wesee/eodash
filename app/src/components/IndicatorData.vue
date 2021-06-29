@@ -476,6 +476,14 @@ export default {
               min.push({ y: Number.NaN, t });
             }
           });
+
+          // Inject statistical data to indicatorObject
+          this.indicatorObject.max = max;
+          this.indicatorObject.min = min;
+          this.indicatorObject.median = median;
+          this.indicatorObject.stdDevMin = stdDevMin;
+          this.indicatorObject.stdDevMax = stdDevMax;
+
           datasets.push({
             label: indicator.yAxis,
             data,

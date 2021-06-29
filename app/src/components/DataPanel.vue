@@ -579,19 +579,22 @@ export default {
     dataCustomHrefCSV() {
       let dataHref = 'data:text/csv;charset=utf-8,';
       const exportKeys = [
-        'time', 'aoi', 'measurement',
+        'time', 'aoi', 'measurement', 'min', 'max', 'median', 'stdDevMin', 'stdDevMax',
       ];
       // TODO: Separate data arrays in referenceValue and add them as columns
       // let referenceKeys = [];
       const wkt = new Wkt();
       const header = `${exportKeys.join()}\n`;
       let csv = header;
+      console.log('custom area indicator', this.customAreaIndicator);
       for (let i = 0; i < this.customAreaIndicator.time.length; i++) {
         let row = '';
         for (let kk = 0; kk < exportKeys.length; kk++) {
           const cKey = exportKeys[kk];
           let txtVal = '';
-          if (cKey === 'aoi') {
+          if (['min', 'max', 'median', 'stdDevMin', 'stdDevMax'].includes(cKey)) {
+            txtVal = `"${this.customAreaIndicator[cKey][i].y}",`;
+          } else if (cKey === 'aoi') {
             if (i === 0 && this.$store.state.features.selectedArea !== null) {
               txtVal = `"${wkt.read(JSON.stringify(this.$store.state.features.selectedArea)).write()}",`;
             } else {
