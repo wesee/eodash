@@ -1,4 +1,4 @@
-# Welcome to eodash
+# Welcome to eodash (forked from eurodatacube/eodash)
 
 eodash is the software powering https://race.esa.int as well as
 https://eodashboard.org
